@@ -16,12 +16,14 @@
 
 package com.cxxwl96.hiatstudio.core;
 
-import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
-import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
-import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.ValidationBuilder;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.ValidationResult;
+import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
+import com.cxxwl96.hiatstudio.core.validate.annotations.BeanParams;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ReturnData;
 import com.cxxwl96.hiatstudio.core.validate.handler.BasicParamHandler;
 import com.cxxwl96.hiatstudio.core.validate.handler.BeanParamsHandler;
 import com.cxxwl96.hiatstudio.core.validate.handler.ListParamsHandler;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -81,9 +84,29 @@ public class MainClass {
 
     }
 
-    @ParamValidator(size = 3)
-    private void myRunMethod(@BasicParam(index = 1) @Min(10) @Max(20) int age, @BasicParam(index = 2) boolean married,
-        @BasicParam(index = 0) @NotBlank String name, @ListParams List<String> params) {
-        log.info("name: {}, age: {}, married:{}", name, age, married);
+    @ParamValidator(size = 4)
+    private void myRunMethod(
+        @BasicParam(index = 0) @NotBlank String name,
+        @BasicParam(index = 1) @Min(10) @Max(20) int age,
+        @BasicParam(index = 2) boolean married,
+        @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,}") String qq,
+        @ListParams List<String> listParams,
+        @BeanParams MyParams beanParams,
+        @ReturnData List<String> returnData) {
+
+        // ................
+    }
+
+    static class MyParams {
+        @NotBlank
+        private String name;
+
+        @Min(10) @Max(20)
+        private int age;
+
+        private boolean married;
+
+        @Pattern(regexp = "[1-9][0-9]{4,}")
+        private String ip;
     }
 }
