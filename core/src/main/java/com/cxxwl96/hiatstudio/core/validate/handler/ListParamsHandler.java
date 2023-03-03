@@ -16,7 +16,7 @@
 
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
-import com.cxxwl96.hiatstudio.core.annotations.ListParams;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 

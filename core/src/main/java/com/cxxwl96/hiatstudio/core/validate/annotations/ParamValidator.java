@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.core.annotations;
+package com.cxxwl96.hiatstudio.core.validate.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

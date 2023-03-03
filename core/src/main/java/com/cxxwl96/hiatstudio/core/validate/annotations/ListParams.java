@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.core.annotations;
+package com.cxxwl96.hiatstudio.core.validate.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,21 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 基础参数注入注解。
- * 与BeanParams作为javaBean接收类似，只不过这里是使用String、基本数据类型及其封装类型作为参数接收。
- * 在参数个数较少的情况下建议使用基础参数注入，避免每个功能接口接收参数都新建一个JavaBean。
+ * ListParams
  *
  * @author cxxwl96
- * @since 2023/2/27 15:34
+ * @since 2023/3/3 18:02
  */
 @Documented
 @Target( {ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BasicParam {
-    // 需要接收参数的位置。即接收第几个参数，索引从0开始
-    int index();
-
-    // 是否必填参数。如果设置为false，则不管该参数前是否有校验的注解，都不作校验。
-    // 例如：@BasicParam(index = 0, required = false) @NotEmpty String name
-    boolean require() default true;
+public @interface ListParams {
 }

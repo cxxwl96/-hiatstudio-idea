@@ -17,7 +17,7 @@
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.alibaba.fastjson.util.TypeUtils;
-import com.cxxwl96.hiatstudio.core.annotations.BasicParam;
+import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 

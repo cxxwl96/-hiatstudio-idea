@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.core.annotations;
+package com.cxxwl96.hiatstudio.core.validate.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ListParams
+ * BeanParams
  *
  * @author cxxwl96
  * @since 2023/3/3 18:02
@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @Documented
 @Target( {ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ListParams {
+public @interface BeanParams {
 }

@@ -16,9 +16,9 @@
 
 package com.cxxwl96.hiatstudio.core;
 
-import com.cxxwl96.hiatstudio.core.annotations.BasicParam;
-import com.cxxwl96.hiatstudio.core.annotations.ListParams;
-import com.cxxwl96.hiatstudio.core.annotations.ParamValidator;
+import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.ValidationBuilder;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.ValidationResult;
