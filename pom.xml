@@ -11,8 +11,6 @@
 
     <modules>
         <module>core</module>
-        <module>base-service</module>
-        <module>component</module>
     </modules>
 
     <properties>
