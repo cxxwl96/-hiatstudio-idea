@@ -43,6 +43,7 @@ import javax.validation.constraints.Pattern;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -56,7 +57,7 @@ public class MainClass {
     public static void main(String[] args) {
         // 需要的参数
         final Method runMethod = ReflectUtil.getMethodByName(MainClass.class, "myRunMethod");
-        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true");
+        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true", "397936661");
         final ArrayList<String> returnData = new ArrayList<>();
 
         // 参数校验
@@ -85,10 +86,8 @@ public class MainClass {
     }
 
     @ParamValidator(size = 4)
-    private void myRunMethod(
-        @BasicParam(index = 0) @NotBlank String name,
-        @BasicParam(index = 1) @Min(10) @Max(20) int age,
-        @BasicParam(index = 2) boolean married,
+    private void myRunMethod(@BasicParam(index = 0) @NotBlank String name,
+        @BasicParam(index = 1) @Min(10) @Max(20) int age, @BasicParam(index = 2) boolean married,
         @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,}") String qq,
 
         @ListParams List<String> listParams,
@@ -100,11 +99,13 @@ public class MainClass {
         // ................
     }
 
-    static class MyParams {
+    @Data
+    public static class MyParams {
         @NotBlank
         private String name;
 
-        @Min(10) @Max(20)
+        @Min(10)
+        @Max(20)
         private int age;
 
         private boolean married;

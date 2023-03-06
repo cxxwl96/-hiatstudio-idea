@@ -16,6 +16,8 @@
 
 package com.cxxwl96.hiatstudio.core.validate;
 
+import java.lang.reflect.Parameter;
+
 /**
  * 参数校验接口
  *
@@ -24,23 +26,14 @@ package com.cxxwl96.hiatstudio.core.validate;
  */
 public interface ArgumentValidatorHandler {
     /**
-     * 执行校验条件，满足此条件才执行下面的handle校验
-     *
-     * @param metadata 校验元数据
-     * @param index 参数索引
-     * @param paramName 参数名
-     * @return 是否满足校验条件
-     */
-    boolean condition(ValidationMetadata metadata, int index, String paramName);
-
-    /**
      * 参数校验处理
      *
      * @param metadata 校验元数据
+     * @param parameter 参数
      * @param index 参数索引
      * @param paramName 参数名
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
-    Object handle(ValidationMetadata metadata, int index, String paramName) throws Exception;
+    Object handle(ValidationMetadata metadata, Parameter parameter, int index, String paramName) throws Exception;
 }

@@ -16,6 +16,9 @@
 
 package com.cxxwl96.hiatstudio.core.validate;
 
+import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -87,6 +90,18 @@ public class Validation {
     private void methodValidate() {
         for (MethodValidatorHandler validator : methodValidators) {
             try {
+                // 校验处理器没有被ValidatorHandler注解修饰则不调用校验处理器的实现
+                if (!validator.getClass().isAnnotationPresent(ValidatorHandler.class)) {
+                    continue;
+                }
+                // 获取需要被校验的注解
+                final Class<? extends Annotation> validAnnotation = validator.getClass()
+                    .getAnnotation(ValidatorHandler.class)
+                    .annotation();
+                // 执行的方法上不包含需要被校验的注解则不调用校验注解处理器的实现
+                if (!metadata.getRunMethod().isAnnotationPresent(validAnnotation)) {
+                    continue;
+                }
                 // 执行校验逻辑
                 validator.handle(metadata);
             } catch (Exception exception) {
@@ -103,12 +118,19 @@ public class Validation {
         final String paramName = metadata.getParamNames()[index];
         for (ArgumentValidatorHandler validator : argumentValidators) {
             try {
-                // 是否满足校验条件
-                if (!validator.condition(metadata, index, paramName)) {
+                // 校验处理器没有被ValidatorHandler注解修饰则不调用校验处理器的实现
+                if (!validator.getClass().isAnnotationPresent(ValidatorHandler.class)) {
                     continue;
                 }
-                // 满足校验条件则执行校验逻辑，并返回参数真实类型的参数值
-                return validator.handle(metadata, index, paramName);
+                // 获取需要被校验的注解
+                final Class<? extends Annotation> validAnnotation = validator.getClass()
+                    .getAnnotation(ValidatorHandler.class)
+                    .annotation();
+                // 若参数上有ValidatorHandler填充的校验注解，则调用校验注解处理器的实现
+                if (parameter.isAnnotationPresent(validAnnotation)) {
+                    // 满足校验条件则执行校验逻辑，并返回参数真实类型的参数值
+                    return validator.handle(metadata, parameter, index, paramName);
+                }
             } catch (Exception exception) {
                 // 校验抛出异常时终止校验
                 log.error(exception.getMessage());
@@ -118,4 +140,5 @@ public class Validation {
         // 都不满足条件则返回默认值
         return ClassUtil.getDefaultValue(parameter.getType());
     }
+
 }

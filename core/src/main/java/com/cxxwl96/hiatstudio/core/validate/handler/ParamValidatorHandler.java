@@ -16,9 +16,10 @@
 
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
-import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.MethodValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
+import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Locale;
  * @author cxxwl96
  * @since 2023/3/3 15:38
  */
+@ValidatorHandler(annotation = ParamValidator.class)
 public class ParamValidatorHandler implements MethodValidatorHandler {
     /**
      * 方法校验处理
@@ -39,18 +41,15 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
     @Override
     public void handle(ValidationMetadata metadata) {
         final Method runMethod = metadata.getRunMethod();
-        final List<String> parameters = metadata.getParamValues();
-        // 是否拥有ParamValidator注解并且需要校验参数个数
-        final boolean hasParamValidator = runMethod.isAnnotationPresent(ParamValidator.class)
-            && runMethod.getAnnotation(ParamValidator.class).valid();
+        final List<String> paramValues = metadata.getParamValues();
         // 拥有ParamValidator注解则优先校验参数个数
-        if (hasParamValidator) {
+        if (runMethod.getAnnotation(ParamValidator.class).valid()) {
             final int expectedSize = runMethod.getAnnotation(ParamValidator.class).size();
             // 不满足个数相等则校验失败
-            if (expectedSize != parameters.size()) {
+            if (expectedSize != paramValues.size()) {
                 final String error = String.format(Locale.ROOT,
                     "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
-                    expectedSize, parameters.size());
+                    expectedSize, paramValues.size());
                 throw new IllegalArgumentException(error);
             }
         }
