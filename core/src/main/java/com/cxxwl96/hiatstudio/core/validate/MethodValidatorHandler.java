@@ -27,7 +27,8 @@ public interface MethodValidatorHandler {
      * 方法校验处理
      *
      * @param metadata 校验元数据
+     * @param chain 校验链
      * @throws Exception 参数校验失败异常
      */
-    void handle(ValidationMetadata metadata) throws Exception;
+    void handle(ValidationMetadata metadata, ValidationChain chain) throws Exception;
 }

@@ -18,6 +18,7 @@ package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.alibaba.fastjson.util.TypeUtils;
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
+import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
@@ -51,6 +52,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
      * 参数校验处理
      *
      * @param metadata 校验元数据
+     * @param chain 校验链
      * @param parameter 参数
      * @param index 参数索引
      * @param paramName 参数名
@@ -58,8 +60,8 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, Parameter parameter, int index, String paramName)
-        throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
+        String paramName) throws Exception {
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
         final BasicParam basicParam = parameter.getAnnotation(BasicParam.class);
         // 校验参数取值是否越界
@@ -107,6 +109,8 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
                 throw new IllegalArgumentException(message.getPropertyName() + message.getMessage());
             }
         }
+        // 拦截下一个校验处理器
+        chain.intercept();
         // 校验通过则返回参数值
         return paramValue;
     }

@@ -17,6 +17,7 @@
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.cxxwl96.hiatstudio.core.validate.MethodValidatorHandler;
+import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
@@ -37,9 +38,10 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
      * 方法校验处理
      *
      * @param metadata 校验元数据
+     * @param chain 校验链
      */
     @Override
-    public void handle(ValidationMetadata metadata) {
+    public void handle(ValidationMetadata metadata, ValidationChain chain) {
         final Method runMethod = metadata.getRunMethod();
         final List<String> paramValues = metadata.getParamValues();
         // 拥有ParamValidator注解则优先校验参数个数

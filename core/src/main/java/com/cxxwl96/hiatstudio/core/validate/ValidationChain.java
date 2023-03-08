@@ -16,26 +16,30 @@
 
 package com.cxxwl96.hiatstudio.core.validate;
 
-import java.lang.reflect.Parameter;
-
 /**
- * 参数校验接口
+ * 校验链
  *
  * @author cxxwl96
- * @since 2023/3/3 14:09
+ * @since 2023/3/8 13:34
  */
-public interface ArgumentValidatorHandler {
+public class ValidationChain {
+    // 是否执行下一个校验处理器。默认需要执行
+    private boolean doNext = true;
+
     /**
-     * 参数校验处理
-     *
-     * @param metadata 校验元数据
-     * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
-     * @return 校验通过参数的值
-     * @throws Exception 参数校验失败异常
+     * 拦截不执行下一个校验处理器
      */
-    Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index, String paramName)
-        throws Exception;
+    public void intercept() {
+        doNext = false;
+    }
+
+    /**
+     * 是否执行下一个校验处理器
+     *
+     * @return 是否执行下一个校验处理器
+     */
+    public boolean doNext() {
+        return doNext;
+    }
+
 }

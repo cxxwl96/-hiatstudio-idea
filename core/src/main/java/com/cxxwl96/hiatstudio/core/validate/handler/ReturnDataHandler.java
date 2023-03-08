@@ -17,6 +17,7 @@
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
+import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ReturnData;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
@@ -35,6 +36,7 @@ public class ReturnDataHandler implements ArgumentValidatorHandler {
      * 参数校验处理
      *
      * @param metadata 校验元数据
+     * @param chain 校验链
      * @param parameter 参数
      * @param index 参数索引
      * @param paramName 参数名
@@ -42,8 +44,10 @@ public class ReturnDataHandler implements ArgumentValidatorHandler {
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, Parameter parameter, int index, String paramName)
-        throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
+        String paramName) throws Exception {
+        // 拦截下一个校验处理器
+        chain.intercept();
         // TODO Validate
         return metadata.getReturnData();
     }

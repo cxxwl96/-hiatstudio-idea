@@ -86,15 +86,14 @@ public class MainClass {
     }
 
     @ParamValidator(size = 4)
-    private void myRunMethod(
-        @BasicParam(index = 0) @NotBlank String name,
+    private void myRunMethod(@BasicParam(index = 0) @NotBlank String name,
         @BasicParam(index = 1) @Min(10) @Max(20) int age,
         @BasicParam(index = 2) boolean married,
         @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,10}") String qq,
 
-        @ListParams List<String> listParams,
+        @ListParams @BeanParams MyParams beanParams,
 
-        @BeanParams MyParams beanParams,
+        @ListParams List<String> listParams,
 
         @ReturnData List<String> returnData) {
 

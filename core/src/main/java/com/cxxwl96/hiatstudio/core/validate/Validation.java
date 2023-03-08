@@ -103,7 +103,12 @@ public class Validation {
                     continue;
                 }
                 // 执行校验逻辑
-                validator.handle(metadata);
+                final ValidationChain chain = new ValidationChain();
+                validator.handle(metadata, chain);
+                // 不执行下一个校验处理器则跳出校验
+                if (!chain.doNext()) {
+                    break;
+                }
             } catch (Exception exception) {
                 // 校验抛出异常时终止校验
                 log.error(exception.getMessage());
@@ -116,6 +121,7 @@ public class Validation {
         final Method runMethod = metadata.getRunMethod();
         final Parameter parameter = runMethod.getParameters()[index];
         final String paramName = metadata.getParamNames()[index];
+        Object paramValue = null; // 参数真实类型的值
         for (ArgumentValidatorHandler validator : argumentValidators) {
             try {
                 // 校验处理器没有被ValidatorHandler注解修饰则不调用校验处理器的实现
@@ -126,10 +132,18 @@ public class Validation {
                 final Class<? extends Annotation> validAnnotation = validator.getClass()
                     .getAnnotation(ValidatorHandler.class)
                     .annotation();
+                // 若参数上没有ValidatorHandler填充的校验注解，则跳过
+                if (!parameter.isAnnotationPresent(validAnnotation)) {
+                    continue;
+                }
                 // 若参数上有ValidatorHandler填充的校验注解，则调用校验注解处理器的实现
-                if (parameter.isAnnotationPresent(validAnnotation)) {
-                    // 满足校验条件则执行校验逻辑，并返回参数真实类型的参数值
-                    return validator.handle(metadata, parameter, index, paramName);
+                // 这里使用校验链的目的是因为一个参数可能被多个校验处理器处理
+                // 多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
+                final ValidationChain chain = new ValidationChain();
+                paramValue = validator.handle(metadata, chain, parameter, index, paramName);
+                // 不执行下一个校验处理器则直接返回参数真实类型的参数值
+                if (!chain.doNext()) {
+                    return paramValue;
                 }
             } catch (Exception exception) {
                 // 校验抛出异常时终止校验
@@ -137,7 +151,11 @@ public class Validation {
                 throw new ValidationException(exception.getMessage(), exception);
             }
         }
-        // 都不满足条件则返回默认值
+        // 若上面没有任何一个校验处理器拦截的话，这里返回最后一个校验处理器处理的结果
+        if (paramValue != null) {
+            return paramValue;
+        }
+        // 若都不满足条件则返回默认值
         return ClassUtil.getDefaultValue(parameter.getType());
     }
 
