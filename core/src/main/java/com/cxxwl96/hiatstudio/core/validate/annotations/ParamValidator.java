@@ -42,5 +42,5 @@ public @interface ParamValidator {
     int size() default 0;
 
     // 自定义校验处理器
-    Class<? extends CustomValidatorHandler> customValidatorHandler() default CustomValidatorHandler.class;
+    Class<? extends CustomValidatorHandler>[] customValidatorHandler() default CustomValidatorHandler.class;
 }

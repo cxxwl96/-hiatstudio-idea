@@ -50,12 +50,14 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
         final List<String> paramValues = metadata.getParamValues();
         final ParamValidator paramValidator = runMethod.getAnnotation(ParamValidator.class);
         // 是否设置了自定义校验，设置了则优先自定义校验
-        final Class<? extends CustomValidatorHandler> clazz = paramValidator.customValidatorHandler();
-        if (!clazz.isInterface()) {
-            clazz.newInstance().handle(metadata.getParamValues(), chain);
-        }
-        if (!chain.doNext()) {
-            return;
+        final Class<? extends CustomValidatorHandler>[] classes = paramValidator.customValidatorHandler();
+        for (Class<? extends CustomValidatorHandler> clazz : classes) {
+            if (!clazz.isInterface()) {
+                clazz.newInstance().handle(metadata.getParamValues(), chain);
+            }
+            if (!chain.doNext()) {
+                return;
+            }
         }
         // 校验个数，不满足个数相等则校验失败
         final int expectedSize = paramValidator.size();
