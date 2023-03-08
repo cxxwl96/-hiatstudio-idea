@@ -16,6 +16,7 @@
 
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
+import com.cxxwl96.hiatstudio.core.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.MethodValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
@@ -25,6 +26,8 @@ import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
+
+import lombok.SneakyThrows;
 
 /**
  * 处理器：@ParamValidator注解校验处理器
@@ -41,19 +44,26 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
      * @param chain 校验链
      */
     @Override
+    @SneakyThrows
     public void handle(ValidationMetadata metadata, ValidationChain chain) {
         final Method runMethod = metadata.getRunMethod();
         final List<String> paramValues = metadata.getParamValues();
-        // 拥有ParamValidator注解则优先校验参数个数
-        if (runMethod.getAnnotation(ParamValidator.class).valid()) {
-            final int expectedSize = runMethod.getAnnotation(ParamValidator.class).size();
-            // 不满足个数相等则校验失败
-            if (expectedSize != paramValues.size()) {
-                final String error = String.format(Locale.ROOT,
-                    "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
-                    expectedSize, paramValues.size());
-                throw new IllegalArgumentException(error);
-            }
+        final ParamValidator paramValidator = runMethod.getAnnotation(ParamValidator.class);
+        // 是否设置了自定义校验，设置了则优先自定义校验
+        final Class<? extends CustomValidatorHandler> clazz = paramValidator.customValidatorHandler();
+        if (!clazz.isInterface()) {
+            clazz.newInstance().handle(metadata.getParamValues(), chain);
+        }
+        if (!chain.doNext()) {
+            return;
+        }
+        // 校验个数，不满足个数相等则校验失败
+        final int expectedSize = paramValidator.size();
+        if (expectedSize != paramValues.size()) {
+            final String error = String.format(Locale.ROOT,
+                "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
+                expectedSize, paramValues.size());
+            throw new IllegalArgumentException(error);
         }
     }
 }

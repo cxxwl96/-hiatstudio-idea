@@ -16,6 +16,8 @@
 
 package com.cxxwl96.hiatstudio.core.validate.annotations;
 
+import com.cxxwl96.hiatstudio.core.validate.CustomValidatorHandler;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,6 +41,6 @@ public @interface ParamValidator {
     // 需要校验的参数个数
     int size() default 0;
 
-    // 是否校验参数个数。默认需要校验
-    boolean valid() default true;
+    // 自定义校验处理器
+    Class<? extends CustomValidatorHandler> customValidatorHandler() default CustomValidatorHandler.class;
 }

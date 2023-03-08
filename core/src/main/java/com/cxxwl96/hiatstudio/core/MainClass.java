@@ -16,7 +16,9 @@
 
 package com.cxxwl96.hiatstudio.core;
 
+import com.cxxwl96.hiatstudio.core.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationBuilder;
+import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
@@ -85,13 +87,13 @@ public class MainClass {
 
     }
 
-    @ParamValidator(size = 4)
+    @ParamValidator(size = 4, customValidatorHandler = MyValidatorHandler.class)
     private void myRunMethod(@BasicParam(index = 0) @NotBlank String name,
         @BasicParam(index = 1) @Min(10) @Max(20) int age,
         @BasicParam(index = 2) boolean married,
         @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,10}") String qq,
 
-        @ListParams @BeanParams MyParams beanParams,
+        @BeanParams MyParams beanParams,
 
         @ListParams List<String> listParams,
 
@@ -113,5 +115,23 @@ public class MainClass {
 
         @Pattern(regexp = "[1-9][0-9]{4,}")
         private String ip;
+    }
+
+    public static class MyValidatorHandler implements CustomValidatorHandler {
+
+        /**
+         * 自定义校验处理
+         *
+         * @param params 入参参数
+         * @param chain 校验链
+         * @throws IllegalArgumentException 参数校验异常
+         */
+        @Override
+        public void handle(List<String> params, ValidationChain chain) throws IllegalArgumentException {
+            chain.intercept();
+            if (params.size() != 4) {
+                throw new IllegalArgumentException("Invalid params.");
+            }
+        }
     }
 }
