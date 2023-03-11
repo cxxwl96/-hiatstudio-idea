@@ -26,6 +26,7 @@ import com.cxxwl96.hiatstudio.core.validate.annotations.BeanParams;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ReturnData;
+import com.cxxwl96.hiatstudio.core.validate.custom.In;
 import com.cxxwl96.hiatstudio.core.validate.handler.BasicParamHandler;
 import com.cxxwl96.hiatstudio.core.validate.handler.BeanParamsHandler;
 import com.cxxwl96.hiatstudio.core.validate.handler.ListParamsHandler;
@@ -88,8 +89,9 @@ public class MainClass {
     }
 
     @ParamValidator(size = 4, customValidatorHandler = MyValidatorHandler.class)
-    private void myRunMethod(@BasicParam(index = 0) @NotBlank String name,
-        @BasicParam(index = 1) @Min(10) @Max(20) int age,
+    private void myRunMethod(
+        @BasicParam(index = 0) @NotBlank String name,
+        @BasicParam(index = 1) @Min(10) @Max(20) @In(values = {11, 12, 13, 18}) int age,
         @BasicParam(index = 2) boolean married,
         @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,10}") String qq,
 
@@ -113,8 +115,8 @@ public class MainClass {
 
         private boolean married;
 
-        @Pattern(regexp = "[1-9][0-9]{4,}")
-        private String ip;
+        @Pattern(regexp = "[1-9][0-9]{4,10}")
+        private String qq;
     }
 
     public static class MyValidatorHandler implements CustomValidatorHandler {
