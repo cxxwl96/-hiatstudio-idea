@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.core.utils;
+package com.cxxwl96.hiatstudio.core.validate;
+
+import com.cxxwl96.hiatstudio.core.utils.ApplicationUtil;
 
 import org.hibernate.validator.HibernateValidator;
 
