@@ -17,6 +17,7 @@
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.cxxwl96.hiatstudio.core.utils.ValidationUtil;
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.validation.BeanValidationResult;
-import cn.hutool.extra.validation.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -106,7 +106,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
         final BeanValidationResult result = ValidationUtil.warpValidate(validInstance);
         if (!result.isSuccess()) {
             for (BeanValidationResult.ErrorMessage message : result.getErrorMessages()) {
-                throw new IllegalArgumentException(message.getPropertyName() + message.getMessage());
+                throw new IllegalArgumentException(message.getMessage());
             }
         }
         // 拦截下一个校验处理器

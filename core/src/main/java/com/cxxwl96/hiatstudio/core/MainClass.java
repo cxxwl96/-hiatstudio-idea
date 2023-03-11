@@ -60,7 +60,7 @@ public class MainClass {
     public static void main(String[] args) {
         // 需要的参数
         final Method runMethod = ReflectUtil.getMethodByName(MainClass.class, "myRunMethod");
-        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true", "397936661");
+        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true", "39793666111");
         final ArrayList<String> returnData = new ArrayList<>();
 
         // 参数校验
