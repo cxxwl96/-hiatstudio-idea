@@ -22,9 +22,9 @@ import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
-import com.cxxwl96.hiatstudio.validate.annotations.BeanParams;
+import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
-import com.cxxwl96.hiatstudio.validate.annotations.ListParams;
+import com.cxxwl96.hiatstudio.validate.annotations.ListParam;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.validate.annotations.ReturnData;
 import com.cxxwl96.hiatstudio.validate.custom.In;
@@ -110,10 +110,10 @@ public class MainClass {
         @JsonParam(index = 5) JsonObj jsonObj,
 
         // 接收JavaBean
-        @BeanParams MyParams beanParams,
+        @BeanParam MyParams beanParams,
 
         // 接收List<String>
-        @ListParams List<String> listParams,
+        @ListParam List<String> listParams,
 
         // 返回数据
         @ReturnData List<String> returnData) {

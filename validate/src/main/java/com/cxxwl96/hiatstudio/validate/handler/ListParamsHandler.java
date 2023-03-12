@@ -19,7 +19,7 @@ package com.cxxwl96.hiatstudio.validate.handler;
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
-import com.cxxwl96.hiatstudio.validate.annotations.ListParams;
+import com.cxxwl96.hiatstudio.validate.annotations.ListParam;
 import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 
 import java.lang.reflect.Parameter;
@@ -30,7 +30,7 @@ import java.lang.reflect.Parameter;
  * @author cxxwl96
  * @since 2023/3/3 17:46
  */
-@ValidatorHandler(annotation = ListParams.class)
+@ValidatorHandler(annotation = ListParam.class)
 public class ListParamsHandler implements ArgumentValidatorHandler {
     /**
      * 参数校验处理
