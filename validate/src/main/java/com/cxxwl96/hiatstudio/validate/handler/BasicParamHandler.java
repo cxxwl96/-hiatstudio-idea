@@ -21,7 +21,6 @@ import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
-import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.utils.ValidationUtil;
 
 import net.bytebuddy.ByteBuddy;
@@ -29,6 +28,8 @@ import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.dynamic.DynamicType;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +47,19 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2023/3/3 15:49
  */
 @Slf4j
-@ValidatorHandler(annotation = BasicParam.class)
-public class BasicParamHandler implements ArgumentValidatorHandler {
+public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
+    private BasicParam basicParam;
+
+    /**
+     * 初始化方法
+     *
+     * @param annotation 注解
+     */
+    @Override
+    public void initialize(BasicParam annotation) {
+        basicParam = annotation;
+    }
+
     /**
      * 参数校验处理
      *
@@ -65,7 +77,6 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
         // 拦截下一个校验处理器
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
-        final BasicParam basicParam = parameter.getAnnotation(BasicParam.class);
         // 校验参数取值是否越界
         if (basicParam.index() < 0 || basicParam.index() >= paramValues.size()) {
             final String error = String.format(Locale.ROOT,
@@ -76,7 +87,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
         // 获取输入的字符串参数
         final String paramValueString = paramValues.get(basicParam.index());
         // 参数值类型转换
-        Object paramValue = typeCast(metadata, parameter, index, paramName, paramValueString);
+        Object paramValue = typeCast(parameter, paramName, paramValueString);
         // 非必填直接返回参数值，不做校验
         if (!basicParam.require()) {
             return paramValue;
@@ -85,13 +96,15 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
         // 使用字节码增强动态生成bean对象，将@BasicParam修饰的参数及其对应的校验注解动态生成javabean
         // 最后通过validate校验
         DynamicType.Builder<Object> basicDynamicBean = new ByteBuddy().subclass(Object.class).name("BasicValidateBean");
-        // 过滤得到除开@BasicParam注解的其他注解
-        List<Annotation> validAnno = Arrays.stream(parameter.getAnnotations())
-            .filter(annotation -> annotation.annotationType() != BasicParam.class)
-            .collect(Collectors.toList());
+        // 过滤得到可以放置在类属性上的注解
+        List<Annotation> validAnnoList = Arrays.stream(parameter.getAnnotations()).filter(annotation -> {
+            // 获取参数上注解类的Target注解
+            return Arrays.stream(annotation.annotationType().getAnnotation(Target.class).value())
+                .anyMatch(elementType -> elementType == ElementType.FIELD);
+        }).collect(Collectors.toList());
         // 将被@BasicParam修饰的参数存入动态bean中
         final Object validInstance = basicDynamicBean.defineField(paramName, parameter.getType(), Visibility.PUBLIC)
-            .annotateField(validAnno)
+            .annotateField(validAnnoList)
             .make()
             .load(ClassLoader.getSystemClassLoader())
             .getLoaded()
@@ -112,15 +125,12 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
     /**
      * 复杂的类型转换
      *
-     * @param metadata 校验元数据
      * @param parameter 参数
-     * @param index 参数索引
      * @param paramName 参数名
      * @param paramValue 参数值。需要转换的数据，可以是基本数据类型的字符串形式，也可以是json字符串
      * @return 转换之后的对象
      */
-    private Object typeCast(ValidationMetadata metadata, Parameter parameter, int index, String paramName,
-        String paramValue) {
+    private Object typeCast(Parameter parameter, String paramName, String paramValue) {
         // 复杂的类型转换，基本数据类型及字符串的转换
         try {
             return TypeUtils.cast(paramValue, parameter.getType(), null);

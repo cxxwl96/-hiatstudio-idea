@@ -20,7 +20,6 @@ import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ReturnData;
-import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 
 import java.lang.reflect.Parameter;
 
@@ -30,8 +29,7 @@ import java.lang.reflect.Parameter;
  * @author cxxwl96
  * @since 2023/3/3 17:46
  */
-@ValidatorHandler(annotation = ReturnData.class)
-public class ReturnDataHandler implements ArgumentValidatorHandler {
+public class ReturnDataHandler implements ArgumentValidatorHandler<ReturnData> {
     /**
      * 参数校验处理
      *
@@ -48,7 +46,6 @@ public class ReturnDataHandler implements ArgumentValidatorHandler {
         String paramName) throws Exception {
         // 拦截下一个校验处理器
         chain.intercept();
-        // TODO Validate
         return metadata.getReturnData();
     }
 }

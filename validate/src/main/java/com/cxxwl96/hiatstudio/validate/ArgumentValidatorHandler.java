@@ -16,6 +16,7 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 
 /**
@@ -24,7 +25,7 @@ import java.lang.reflect.Parameter;
  * @author cxxwl96
  * @since 2023/3/3 14:09
  */
-public interface ArgumentValidatorHandler {
+public interface ArgumentValidatorHandler<A extends Annotation> extends Initializable<A> {
     /**
      * 参数校验处理
      *

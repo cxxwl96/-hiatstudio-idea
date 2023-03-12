@@ -33,7 +33,7 @@ import lombok.Getter;
  */
 @Getter
 public class ValidationMetadata {
-    // Spring参数名工具
+    // 参数名工具，Spring的参数名工具
     private static final DefaultParameterNameDiscoverer DISCOVERER = new DefaultParameterNameDiscoverer();
 
     // 执行的功能接口

@@ -20,7 +20,6 @@ import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
-import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 
 import java.lang.reflect.Parameter;
 
@@ -30,8 +29,19 @@ import java.lang.reflect.Parameter;
  * @author cxxwl96
  * @since 2023/3/3 17:46
  */
-@ValidatorHandler(annotation = BeanParam.class)
-public class BeanParamsHandler implements ArgumentValidatorHandler {
+public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
+    private BeanParam beanParam;
+
+    /**
+     * 初始化方法
+     *
+     * @param annotation 注解
+     */
+    @Override
+    public void initialize(BeanParam annotation) {
+        beanParam = annotation;
+    }
+
     /**
      * 参数校验处理
      *

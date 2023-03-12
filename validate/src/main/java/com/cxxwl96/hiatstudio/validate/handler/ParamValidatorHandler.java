@@ -21,9 +21,7 @@ import com.cxxwl96.hiatstudio.validate.MethodValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
-import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,8 +33,19 @@ import lombok.SneakyThrows;
  * @author cxxwl96
  * @since 2023/3/3 15:38
  */
-@ValidatorHandler(annotation = ParamValidator.class)
-public class ParamValidatorHandler implements MethodValidatorHandler {
+public class ParamValidatorHandler implements MethodValidatorHandler<ParamValidator> {
+    private ParamValidator paramValidator;
+
+    /**
+     * 初始化方法
+     *
+     * @param annotation 注解
+     */
+    @Override
+    public void initialize(ParamValidator annotation) {
+        paramValidator = annotation;
+    }
+
     /**
      * 方法校验处理
      *
@@ -46,9 +55,7 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
     @Override
     @SneakyThrows
     public void handle(ValidationMetadata metadata, ValidationChain chain) {
-        final Method runMethod = metadata.getRunMethod();
         final List<String> paramValues = metadata.getParamValues();
-        final ParamValidator paramValidator = runMethod.getAnnotation(ParamValidator.class);
         // 是否设置了自定义校验，设置了则优先自定义校验
         final Class<? extends CustomValidatorHandler>[] classes = paramValidator.customValidatorHandler();
         for (Class<? extends CustomValidatorHandler> clazz : classes) {

@@ -16,13 +16,15 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import java.lang.annotation.Annotation;
+
 /**
  * 方法校验接口
  *
  * @author cxxwl96
  * @since 2023/3/3 14:09
  */
-public interface MethodValidatorHandler {
+public interface MethodValidatorHandler<A extends Annotation> extends Initializable<A> {
     /**
      * 方法校验处理
      *

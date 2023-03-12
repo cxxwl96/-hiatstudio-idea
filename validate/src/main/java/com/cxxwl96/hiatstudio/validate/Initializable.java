@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate.annotations;
+package com.cxxwl96.hiatstudio.validate;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * 需要被实现的校验注解，该注解用于判断校验处理器是否包含某个校验注解时，
- * 才进行校验注解实现的调用
+ * 校验处理器初始化接口
  *
  * @author cxxwl96
- * @since 2023/3/6 11:41
+ * @since 2023/3/12 23:19
  */
-@Documented
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ValidatorHandler {
-    // 需要被实现的校验注解
-    Class<? extends Annotation> annotation();
+public interface Initializable<A extends Annotation> {
+    /**
+     * 初始化方法
+     * 注意：
+     * 该方法名不可更改，在Validation.invokeInitializable()方法里直接通过方法名的字符串获取该方法，
+     * 因为函数式接口方式在lambda的语法上不能直接调用有参方法，资质过浅暂时还想不到其他方式获取该方法的方法名
+     *
+     * @param annotation 注解
+     */
+    default void initialize(A annotation) {
+    }
 }

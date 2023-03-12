@@ -16,6 +16,7 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class ValidationBuilder {
     private final ValidationMetadata metadata;
 
     // 方法校验实体
-    private final List<MethodValidatorHandler> methodValidators = new ArrayList<>();
+    private final List<MethodValidatorHandler<? extends Annotation>> methodValidators = new ArrayList<>();
 
     // 参数校验实体
-    private final List<ArgumentValidatorHandler> argumentValidators = new ArrayList<>();
+    private final List<ArgumentValidatorHandler<? extends Annotation>> argumentValidators = new ArrayList<>();
 
     /**
      * 构造器。包内访问，不允许外部创建
@@ -54,7 +55,7 @@ public class ValidationBuilder {
      * @return ValidationBuilder
      */
     public static ValidationBuilder builder(ValidationMetadata metadata) {
-        // metadata不允许为null
+        // 传入的metadata不允许为null
         Assert.notNull(metadata, "metadata cannot be null.");
         return new ValidationBuilder(metadata);
     }
@@ -65,8 +66,8 @@ public class ValidationBuilder {
      * @param validator 方法校验实体
      * @return ValidationBuilder
      */
-    public ValidationBuilder addMethodValidator(MethodValidatorHandler validator) {
-        // validator不允许为null
+    public ValidationBuilder addMethodValidator(MethodValidatorHandler<? extends Annotation> validator) {
+        // 传入的validator不允许为null
         Assert.notNull(validator, "validator cannot be null.");
         methodValidators.add(validator);
         return this;
@@ -78,8 +79,8 @@ public class ValidationBuilder {
      * @param validator 参数校验实体
      * @return ValidationBuilder
      */
-    public ValidationBuilder addArgumentValidator(ArgumentValidatorHandler validator) {
-        // validator不允许为null
+    public ValidationBuilder addArgumentValidator(ArgumentValidatorHandler<? extends Annotation> validator) {
+        // 传入的validator不允许为null
         Assert.notNull(validator, "validator cannot be null.");
         argumentValidators.add(validator);
         return this;

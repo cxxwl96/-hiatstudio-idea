@@ -23,14 +23,12 @@ import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
-import com.cxxwl96.hiatstudio.validate.annotations.ValidatorHandler;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Locale;
 
 import cn.hutool.json.JSONUtil;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 处理器：@JsonParam注解校验处理器
@@ -38,9 +36,19 @@ import lombok.extern.slf4j.Slf4j;
  * @author cxxwl96
  * @since 2023/3/12 11:45
  */
-@Slf4j
-@ValidatorHandler(annotation = JsonParam.class)
-public class JsonParamHandler implements ArgumentValidatorHandler {
+public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
+    private JsonParam jsonParam;
+
+    /**
+     * 初始化方法
+     *
+     * @param annotation 注解
+     */
+    @Override
+    public void initialize(JsonParam annotation) {
+        jsonParam = annotation;
+    }
+
     /**
      * 参数校验处理
      *
@@ -58,7 +66,6 @@ public class JsonParamHandler implements ArgumentValidatorHandler {
         // 拦截下一个校验处理器
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
-        final JsonParam jsonParam = parameter.getAnnotation(JsonParam.class);
         // 校验参数取值是否越界
         if (jsonParam.index() < 0 || jsonParam.index() >= paramValues.size()) {
             final String error = String.format(Locale.ROOT,
