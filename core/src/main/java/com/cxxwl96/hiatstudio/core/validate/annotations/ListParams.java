@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ListParams
+ * 接收List<String>
  *
  * @author cxxwl96
  * @since 2023/3/3 18:02
@@ -32,4 +32,6 @@ import java.lang.annotation.Target;
 @Target( {ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ListParams {
+    // 需要校验的参数个数，size大于等于0才做校验
+    int size() default -1;
 }

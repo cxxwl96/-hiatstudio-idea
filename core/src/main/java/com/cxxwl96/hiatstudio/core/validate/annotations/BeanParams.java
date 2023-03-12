@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * BeanParams
+ * 接收JavaBean
  *
  * @author cxxwl96
  * @since 2023/3/3 18:02

@@ -23,15 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 基础参数注入注解。
- * 与BeanParams作为javaBean接收类似，只不过这里是一个参数一个参数的接收
- * 在参数个数较少的情况下建议使用基础参数注入，避免每个功能接口接收参数都新建一个JavaBean。
+ * 接收JSON字符串对应的类型
  *
  * @author cxxwl96
  * @since 2023/3/12 11:34
  */
 @Documented
-@Target( {ElementType.PARAMETER})
+@Target( {ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonParam {
     // 需要接收参数的位置。即接收第几个参数，索引从0开始

@@ -89,6 +89,8 @@ public class MainClass {
 
     }
 
+    // size: 长度校验
+    // customValidatorHandler: 自定义校验处理器
     @ParamValidator(size = 5, customValidatorHandler = MyValidatorHandler.class)
     private void myRunMethod(
         // 接收字符串
@@ -102,14 +104,17 @@ public class MainClass {
         // 接收JSON字符串对应的类型
         @JsonParam(index = 4) List<String> addresses,
 
+        // 接收JavaBean
         @BeanParams MyParams beanParams,
 
+        // 接收List<String>
         @ListParams List<String> listParams,
 
+        // 返回数据
         @ReturnData List<String> returnData) {
 
+        // 方法体..........
         System.out.println();
-        // ................
     }
 
     @Data
