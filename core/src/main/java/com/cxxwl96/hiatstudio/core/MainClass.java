@@ -23,6 +23,7 @@ import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.core.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.core.validate.annotations.BeanParams;
+import com.cxxwl96.hiatstudio.core.validate.annotations.JsonParam;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ListParams;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ReturnData;
@@ -60,7 +61,7 @@ public class MainClass {
     public static void main(String[] args) {
         // 需要的参数
         final Method runMethod = ReflectUtil.getMethodByName(MainClass.class, "myRunMethod");
-        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true", "39793666111");
+        final List<String> parameters = CollUtil.newArrayList("cyk", "18", "true", "39793666111", "[\"贵州\",\"广东\"]");
         final ArrayList<String> returnData = new ArrayList<>();
 
         // 参数校验
@@ -88,12 +89,18 @@ public class MainClass {
 
     }
 
-    @ParamValidator(size = 4, customValidatorHandler = MyValidatorHandler.class)
+    @ParamValidator(size = 5, customValidatorHandler = MyValidatorHandler.class)
     private void myRunMethod(
+        // 接收字符串
         @BasicParam(index = 0) @NotBlank String name,
+        // 接收整型、自定义注解@In校验
         @BasicParam(index = 1) @Min(10) @Max(20) @In(values = {11, 12, 13, 18}) int age,
+        // 接收boolean
         @BasicParam(index = 2) boolean married,
+        // 接收字符串、正则校验
         @BasicParam(index = 3) @Pattern(regexp = "[1-9][0-9]{4,10}") String qq,
+        // 接收JSON字符串对应的类型
+        @JsonParam(index = 4) List<String> addresses,
 
         @BeanParams MyParams beanParams,
 
@@ -101,6 +108,7 @@ public class MainClass {
 
         @ReturnData List<String> returnData) {
 
+        System.out.println();
         // ................
     }
 
@@ -131,7 +139,7 @@ public class MainClass {
         @Override
         public void handle(List<String> params, ValidationChain chain) throws IllegalArgumentException {
             chain.intercept();
-            if (params.size() != 4) {
+            if (params.size() != 5) {
                 throw new IllegalArgumentException("Invalid params.");
             }
         }

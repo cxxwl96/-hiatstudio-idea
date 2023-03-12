@@ -16,8 +16,6 @@
 
 package com.cxxwl96.hiatstudio.core.validate.annotations;
 
-import com.cxxwl96.hiatstudio.core.validate.CustomValidatorHandler;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,22 +23,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 参数校验。
- * 仅用于功能接口上，用于参数个数校验，此注解可配合@BasicParam、@BeanParams、@ListParams使用。
- * <p>
- * 注：此注解的参数个数校验优先级高于以上一切可能带有参数个数校验注解的优先级。
- * 例如@BeanParams自动校验属性个数、@ListParams自带参数个数。当设置了此注解校验参数个数时，将优先使用此注解校验参数个数
+ * 基础参数注入注解。
+ * 与BeanParams作为javaBean接收类似，只不过这里是一个参数一个参数的接收
+ * 在参数个数较少的情况下建议使用基础参数注入，避免每个功能接口接收参数都新建一个JavaBean。
  *
  * @author cxxwl96
- * @since 2023/2/27 15:08
+ * @since 2023/3/12 11:34
  */
 @Documented
-@Target(ElementType.METHOD)
+@Target( {ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ParamValidator {
-    // 需要校验的参数个数，size大于等于0才做校验
-    int size() default -1;
-
-    // 自定义校验处理器
-    Class<? extends CustomValidatorHandler>[] customValidatorHandler() default {};
+public @interface JsonParam {
+    // 需要接收参数的位置。即接收第几个参数，索引从0开始
+    int index();
 }

@@ -17,10 +17,10 @@
 package com.cxxwl96.hiatstudio.core.validate.handler;
 
 import com.alibaba.fastjson.util.TypeUtils;
-import com.cxxwl96.hiatstudio.core.validate.ValidationUtil;
 import com.cxxwl96.hiatstudio.core.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.core.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.core.validate.ValidationMetadata;
+import com.cxxwl96.hiatstudio.core.validate.ValidationUtil;
 import com.cxxwl96.hiatstudio.core.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.core.validate.annotations.ValidatorHandler;
 
@@ -62,6 +62,8 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
     @Override
     public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
         String paramName) throws Exception {
+        // 拦截下一个校验处理器
+        chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
         final BasicParam basicParam = parameter.getAnnotation(BasicParam.class);
         // 校验参数取值是否越界
@@ -74,16 +76,10 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
         // 获取输入的字符串参数
         final String paramValueString = paramValues.get(basicParam.index());
         // 参数值类型转换
-        Object paramValue;
-        try {
-            // 复杂的类型转换，将字符串参数转换为对应类型的参数
-            paramValue = TypeUtils.cast(paramValueString, parameter.getType(), null);
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-            final String error = String.format(Locale.ROOT,
-                "The type of parameter \"%s\" does not match the type of the input parameter. An \"%s\" is expected, but \"%s\" is entered.",
-                paramName, parameter.getType(), paramValueString);
-            throw new ClassCastException(error);
+        Object paramValue = typeCast(metadata, parameter, index, paramName, paramValueString);
+        // 非必填直接返回参数值，不做校验
+        if (!basicParam.require()) {
+            return paramValue;
         }
         // 校验@BasicParam修饰的参数
         // 使用字节码增强动态生成bean对象，将@BasicParam修饰的参数及其对应的校验注解动态生成javabean
@@ -109,9 +105,31 @@ public class BasicParamHandler implements ArgumentValidatorHandler {
                 throw new IllegalArgumentException(message.getMessage());
             }
         }
-        // 拦截下一个校验处理器
-        chain.intercept();
         // 校验通过则返回参数值
         return paramValue;
+    }
+
+    /**
+     * 复杂的类型转换
+     *
+     * @param metadata 校验元数据
+     * @param parameter 参数
+     * @param index 参数索引
+     * @param paramName 参数名
+     * @param paramValue 参数值。需要转换的数据，可以是基本数据类型的字符串形式，也可以是json字符串
+     * @return 转换之后的对象
+     */
+    private Object typeCast(ValidationMetadata metadata, Parameter parameter, int index, String paramName,
+        String paramValue) {
+        // 复杂的类型转换，基本数据类型及字符串的转换
+        try {
+            return TypeUtils.cast(paramValue, parameter.getType(), null);
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            final String error = String.format(Locale.ROOT,
+                "The type of parameter \"%s\" does not match the type of the input parameter. An \"%s\" is expected, but \"%s\" is entered.",
+                paramName, parameter, paramValue);
+            throw new ClassCastException(error);
+        }
     }
 }

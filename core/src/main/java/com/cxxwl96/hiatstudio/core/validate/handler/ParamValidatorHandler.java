@@ -59,9 +59,9 @@ public class ParamValidatorHandler implements MethodValidatorHandler {
                 return;
             }
         }
-        // 校验个数，不满足个数相等则校验失败
+        // 校验个数，配置了参数长度并且不满足个数相等则校验失败
         final int expectedSize = paramValidator.size();
-        if (expectedSize != paramValues.size()) {
+        if (expectedSize >= 0 && expectedSize != paramValues.size()) {
             final String error = String.format(Locale.ROOT,
                 "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
                 expectedSize, paramValues.size());

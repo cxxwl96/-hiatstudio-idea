@@ -80,6 +80,7 @@ public class Validation {
                 // 执行校验实体校验参数
                 paramValues.add(argumentValidate(index));
             } catch (Exception exception) {
+                log.error(exception.getMessage(), exception);
                 return ValidationResult.failed().setErrorMessage(exception.getMessage());
             }
         }
@@ -111,7 +112,6 @@ public class Validation {
                 }
             } catch (Exception exception) {
                 // 校验抛出异常时终止校验
-                log.error(exception.getMessage());
                 throw new ValidationException(exception.getMessage(), exception);
             }
         }
@@ -147,7 +147,6 @@ public class Validation {
                 }
             } catch (Exception exception) {
                 // 校验抛出异常时终止校验
-                log.error(exception.getMessage());
                 throw new ValidationException(exception.getMessage(), exception);
             }
         }

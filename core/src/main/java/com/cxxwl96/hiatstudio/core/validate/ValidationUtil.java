@@ -34,7 +34,7 @@ import cn.hutool.extra.validation.BeanValidationResult;
  * java bean 校验工具类，此工具类基于validation-api（jakarta.validation-api）封装
  * 在实际使用中，用户需引入validation-api的实现，如：hibernate-validator
  * 注意：hibernate-validator还依赖了javax.el，需自行引入。
- * 该工具类来自cn.hutool.hutool-all:5.7.22，拷贝出来的原因是强制使用英文报错信息
+ * 该工具类来自cn.hutool.hutool-all:5.7.22，拷贝出来的原因是增加语言配置，默认使用ENGLISH报错信息
  *
  * @author cxxwl96
  * @since 2023/3/11 19:13
