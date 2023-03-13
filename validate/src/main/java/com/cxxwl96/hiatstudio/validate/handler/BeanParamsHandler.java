@@ -58,7 +58,9 @@ public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
         String paramName) throws Exception {
         // 拦截下一个校验处理器
         chain.intercept();
-        // TODO Validate
+        // 校验个数，配置了参数长度并且不满足个数相等则校验失败
+        constraintSize(beanParam.size(), metadata.getParamValues().size());
+
         return metadata.getRunMethod().getParameters()[index].getType().newInstance();
     }
 }

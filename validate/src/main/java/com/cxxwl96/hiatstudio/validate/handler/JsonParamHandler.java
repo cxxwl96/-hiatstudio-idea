@@ -26,7 +26,6 @@ import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
-import java.util.Locale;
 
 import cn.hutool.json.JSONUtil;
 
@@ -67,12 +66,7 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
         // 校验参数取值是否越界
-        if (jsonParam.index() < 0 || jsonParam.index() >= paramValues.size()) {
-            final String error = String.format(Locale.ROOT,
-                "Out of range. There are only %d input parameters, but \"%s\" takes a %d parameter.",
-                paramValues.size(), paramName, jsonParam.index() + 1);
-            throw new IndexOutOfBoundsException(error);
-        }
+        constraintIndexOutOfRange(paramName, jsonParam.index(), paramValues.size());
         // 获取输入的字符串参数
         final String paramValueString = paramValues.get(jsonParam.index());
         // 判断是否是JSON字符串

@@ -24,7 +24,7 @@ import java.lang.annotation.Annotation;
  * @author cxxwl96
  * @since 2023/3/3 14:09
  */
-public interface MethodValidatorHandler<A extends Annotation> extends Initializable<A> {
+public interface MethodValidatorHandler<A extends Annotation> extends Initializable<A>, Constraintable {
     /**
      * 方法校验处理
      *

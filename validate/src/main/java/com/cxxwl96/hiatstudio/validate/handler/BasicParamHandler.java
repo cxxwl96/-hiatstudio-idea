@@ -16,7 +16,6 @@
 
 package com.cxxwl96.hiatstudio.validate.handler;
 
-import com.alibaba.fastjson.util.TypeUtils;
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
@@ -33,7 +32,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.ReflectUtil;
@@ -78,12 +76,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
         // 校验参数取值是否越界
-        if (basicParam.index() < 0 || basicParam.index() >= paramValues.size()) {
-            final String error = String.format(Locale.ROOT,
-                "Out of range. There are only %d input parameters, but \"%s\" takes a %d parameter.",
-                paramValues.size(), paramName, basicParam.index() + 1);
-            throw new IndexOutOfBoundsException(error);
-        }
+        constraintIndexOutOfRange(paramName, basicParam.index(), paramValues.size());
         // 获取输入的字符串参数
         final String paramValueString = paramValues.get(basicParam.index());
         // 参数值类型转换
@@ -120,26 +113,5 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
         }
         // 校验通过则返回参数值
         return paramValue;
-    }
-
-    /**
-     * 复杂的类型转换
-     *
-     * @param parameter 参数
-     * @param paramName 参数名
-     * @param paramValue 参数值。需要转换的数据，可以是基本数据类型的字符串形式，也可以是json字符串
-     * @return 转换之后的对象
-     */
-    private Object typeCast(Parameter parameter, String paramName, String paramValue) {
-        // 复杂的类型转换，基本数据类型及字符串的转换
-        try {
-            return TypeUtils.cast(paramValue, parameter.getType(), null);
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
-            final String error = String.format(Locale.ROOT,
-                "The type of parameter \"%s\" does not match the type of the input parameter. An \"%s\" is expected, but \"%s\" is entered.",
-                paramName, parameter, paramValue);
-            throw new ClassCastException(error);
-        }
     }
 }

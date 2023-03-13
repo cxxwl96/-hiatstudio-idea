@@ -22,9 +22,6 @@ import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
 
-import java.util.List;
-import java.util.Locale;
-
 import lombok.SneakyThrows;
 
 /**
@@ -55,7 +52,6 @@ public class ParamValidatorHandler implements MethodValidatorHandler<ParamValida
     @Override
     @SneakyThrows
     public void handle(ValidationMetadata metadata, ValidationChain chain) {
-        final List<String> paramValues = metadata.getParamValues();
         // 是否设置了自定义校验，设置了则优先自定义校验
         final Class<? extends CustomValidatorHandler>[] classes = paramValidator.customValidatorHandler();
         for (Class<? extends CustomValidatorHandler> clazz : classes) {
@@ -67,12 +63,6 @@ public class ParamValidatorHandler implements MethodValidatorHandler<ParamValida
             }
         }
         // 校验个数，配置了参数长度并且不满足个数相等则校验失败
-        final int expectedSize = paramValidator.size();
-        if (expectedSize >= 0 && expectedSize != paramValues.size()) {
-            final String error = String.format(Locale.ROOT,
-                "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
-                expectedSize, paramValues.size());
-            throw new IllegalArgumentException(error);
-        }
+        constraintSize(paramValidator.size(), metadata.getParamValues().size());
     }
 }

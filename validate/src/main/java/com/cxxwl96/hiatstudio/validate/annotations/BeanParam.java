@@ -32,4 +32,6 @@ import java.lang.annotation.Target;
 @Target( {ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BeanParam {
+    // 需要校验的参数个数，size大于等于0才做校验
+    int size() default -1;
 }

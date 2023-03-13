@@ -22,8 +22,6 @@ import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ListParam;
 
 import java.lang.reflect.Parameter;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * 处理器：@ListParams注解校验处理器
@@ -61,14 +59,7 @@ public class ListParamsHandler implements ArgumentValidatorHandler<ListParam> {
         // 拦截下一个校验处理器
         chain.intercept();
         // 校验个数，配置了参数长度并且不满足个数相等则校验失败
-        final int expectedSize = listParam.size();
-        final List<String> paramValues = metadata.getParamValues();
-        if (expectedSize >= 0 && expectedSize != paramValues.size()) {
-            final String error = String.format(Locale.ROOT,
-                "The number of parameters is not equal. %d parameters are expected, but %d parameters are obtained.",
-                expectedSize, paramValues.size());
-            throw new IllegalArgumentException(error);
-        }
+        constraintSize(listParam.size(), metadata.getParamValues().size());
         return metadata.getParamValues();
     }
 }
