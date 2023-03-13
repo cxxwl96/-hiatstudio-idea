@@ -111,7 +111,7 @@ public class MainClass {
         @JsonParam(index = 5) JsonObject jsonObj,
 
         // 接收JavaBean
-        @BeanParam BeanParams beanParams,
+        @BeanParam(size = 6) BeanParams beanParams,
 
         // 接收List<String>
         @ListParam List<String> listParams,
