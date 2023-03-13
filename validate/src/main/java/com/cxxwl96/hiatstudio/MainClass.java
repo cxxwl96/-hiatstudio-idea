@@ -23,6 +23,7 @@ import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
+import com.cxxwl96.hiatstudio.validate.annotations.IgnoreField;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
 import com.cxxwl96.hiatstudio.validate.annotations.ListParam;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
@@ -107,10 +108,10 @@ public class MainClass {
         // 接收JSON字符串对应的类型
         @JsonParam(index = 4) List<String> addresses,
         // 接收JSON字符串对应的类型
-        @JsonParam(index = 5) JsonObj jsonObj,
+        @JsonParam(index = 5) JsonObject jsonObj,
 
         // 接收JavaBean
-        @BeanParam MyParams beanParams,
+        @BeanParam BeanParams beanParams,
 
         // 接收List<String>
         @ListParam List<String> listParams,
@@ -123,7 +124,7 @@ public class MainClass {
     }
 
     @Data
-    public static class MyParams {
+    public static class BeanParams {
         @NotBlank
         private String name;
 
@@ -135,10 +136,27 @@ public class MainClass {
 
         @Pattern(regexp = "[1-9][0-9]{4,10}")
         private String qq;
+
+        @IgnoreField
+        private String ignoreField;
+
+        // 接收JSON字符串对应的类型
+        @JsonParam(index = 4)
+        private List<String> addresses;
+
+        // 接收JSON字符串对应的类型
+        @JsonParam(index = 5)
+        private JsonObject jsonObj;
+
+        // setter方式注入
+        private void setName(String name) {
+            this.name = name;
+            // 这里可以做其他操作
+        }
     }
 
     @Data
-    public static class JsonObj {
+    public static class JsonObject {
         private String key1;
 
         private List<String> key2;

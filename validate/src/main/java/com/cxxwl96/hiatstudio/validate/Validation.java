@@ -93,7 +93,7 @@ public class Validation {
     private void methodValidate() {
         for (MethodValidatorHandler<? extends Annotation> validator : methodValidators) {
             try {
-                // 1、调用初始化方法，不直接使用validator.initialize()调用的原因是因为Java有泛型擦除，语法检查上不支持
+                // 1、调用初始化方法
                 if (!invokeInitializable(validator, metadata.getRunMethod())) {
                     // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
                     continue;
@@ -118,7 +118,7 @@ public class Validation {
         Object paramValue = null; // 参数真实类型的值
         for (ArgumentValidatorHandler<? extends Annotation> validator : argumentValidators) {
             try {
-                // 1、调用初始化方法，不直接使用validator.initialize()调用的原因是因为Java有泛型擦除，语法检查上不支持
+                // 1、调用初始化方法
                 if (!invokeInitializable(validator, parameter)) {
                     // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
                     continue;

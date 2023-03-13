@@ -23,18 +23,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 接收标准的JavaBean对象
- * 标准的javaBean需要满足以下其一标准：
- * 1、存在只有一个参数的setXXX方法
- * 2、存在非static的public类型字段
+ * JavaBean中忽略字段注解
  *
  * @author cxxwl96
- * @since 2023/3/3 18:02
+ * @since 2023/3/13 18:57
  */
 @Documented
-@Target( {ElementType.PARAMETER})
+@Target( {ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BeanParam {
-    // 需要校验的参数个数，size大于等于0才做校验
-    int size() default -1;
+public @interface IgnoreField {
 }

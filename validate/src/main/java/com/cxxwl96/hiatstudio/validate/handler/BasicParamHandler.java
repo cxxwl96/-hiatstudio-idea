@@ -80,7 +80,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
         // 获取输入的字符串参数
         final String paramValueString = paramValues.get(basicParam.index());
         // 参数值类型转换
-        Object paramValue = typeCast(parameter, paramName, paramValueString);
+        Object paramValue = typeCast(paramName, paramValueString, parameter.getType());
         // 非必填直接返回参数值，不做校验
         if (!basicParam.require()) {
             return paramValue;
@@ -96,16 +96,16 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
                 .anyMatch(elementType -> elementType == ElementType.FIELD);
         }).collect(Collectors.toList());
         // 将被@BasicParam修饰的参数存入动态bean中
-        final Object validInstance = basicDynamicBean.defineField(paramName, parameter.getType(), Visibility.PUBLIC)
+        final Object beanInstance = basicDynamicBean.defineField(paramName, parameter.getType(), Visibility.PUBLIC)
             .annotateField(validAnnoList)
             .make()
             .load(ClassLoader.getSystemClassLoader())
             .getLoaded()
             .newInstance();
         // 给validInstance字段赋值
-        ReflectUtil.setFieldValue(validInstance, paramName, paramValue);
+        ReflectUtil.setFieldValue(beanInstance, paramName, paramValue);
         // 最终通过validate进行校验
-        final BeanValidationResult result = ValidationUtil.warpValidate(validInstance);
+        final BeanValidationResult result = ValidationUtil.warpValidate(beanInstance);
         if (!result.isSuccess()) {
             for (BeanValidationResult.ErrorMessage message : result.getErrorMessages()) {
                 throw new IllegalArgumentException(message.getMessage());

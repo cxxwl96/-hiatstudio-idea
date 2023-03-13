@@ -51,20 +51,20 @@ public interface ArgumentValidatorHandler<A extends Annotation> extends Initiali
     /**
      * 复杂的类型转换
      *
-     * @param parameter 参数
      * @param paramName 参数名
      * @param paramValue 参数值。需要转换的数据，可以是基本数据类型的字符串形式，也可以是json字符串
+     * @param paramTypeClass 需要转换的参数类型
      * @return 转换之后的对象
      */
-    default Object typeCast(Parameter parameter, String paramName, String paramValue) {
+    default Object typeCast(String paramName, String paramValue, Class<?> paramTypeClass) {
         // 复杂的类型转换，基本数据类型及字符串的转换
         try {
-            return TypeUtils.cast(paramValue, parameter.getType(), null);
+            return TypeUtils.cast(paramValue, paramTypeClass, null);
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
             final String error = String.format(Locale.ROOT,
                 "The type of parameter \"%s\" does not match the type of the input parameter. An \"%s\" is expected, but \"%s\" is entered.",
-                paramName, parameter, paramValue);
+                paramName, paramTypeClass.getName(), paramValue);
             throw new ClassCastException(error);
         }
     }
