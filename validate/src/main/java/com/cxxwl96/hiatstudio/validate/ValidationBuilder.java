@@ -44,7 +44,7 @@ public class ValidationBuilder {
      *
      * @param metadata 参数校验数据元
      */
-    ValidationBuilder(ValidationMetadata metadata) {
+    private ValidationBuilder(ValidationMetadata metadata) {
         this.metadata = metadata;
     }
 
