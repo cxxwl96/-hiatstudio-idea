@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate;
+package com.cxxwl96.hiatstudio.validate.res;
+
+import com.cxxwl96.hiatstudio.validate.CustomValidatorHandler;
+import com.cxxwl96.hiatstudio.validate.ValidationChain;
 
 import java.util.List;
 
 /**
- * 自定义校验接口
+ * MyValidatorHandler
  *
  * @author cxxwl96
- * @since 2023/3/8 14:27
+ * @since 2023/3/14 19:04
  */
-public interface CustomValidatorHandler {
+public class MyValidatorHandler implements CustomValidatorHandler {
     /**
      * 自定义校验处理
      *
@@ -32,5 +35,12 @@ public interface CustomValidatorHandler {
      * @param chain 校验链
      * @throws IllegalArgumentException 参数校验异常
      */
-    void handle(List<String> paramValues, ValidationChain chain) throws IllegalArgumentException;
+    @Override
+    public void handle(List<String> paramValues, ValidationChain chain) throws IllegalArgumentException {
+        // 设置校验链拦截，拦截后则不校验@ParamValidator(size = 3)设置的size=3的长度
+        chain.intercept();
+        if (paramValues.size() != 3) {
+            throw new IllegalArgumentException("The number of arguments is not equal to 3.");
+        }
+    }
 }

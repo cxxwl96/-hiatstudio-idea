@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate.custom;
+package com.cxxwl96.hiatstudio.validate.res;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,7 +29,7 @@ import javax.validation.Payload;
  * In
  *
  * @author cxxwl96
- * @since 2023/3/11 17:58
+ * @since 2023/3/14 19:04
  */
 @Constraint(validatedBy = InValidator.class)
 @Documented

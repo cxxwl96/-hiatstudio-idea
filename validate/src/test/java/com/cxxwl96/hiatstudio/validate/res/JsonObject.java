@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate;
+package com.cxxwl96.hiatstudio.validate.res;
 
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
+import lombok.Data;
+
 /**
- * 自定义校验接口
+ * JsonObject
  *
  * @author cxxwl96
- * @since 2023/3/8 14:27
+ * @since 2023/3/14 19:02
  */
-public interface CustomValidatorHandler {
-    /**
-     * 自定义校验处理
-     *
-     * @param paramValues 入参参数
-     * @param chain 校验链
-     * @throws IllegalArgumentException 参数校验异常
-     */
-    void handle(List<String> paramValues, ValidationChain chain) throws IllegalArgumentException;
+@Data
+public class JsonObject {
+    private String key1;
+
+    @Size(max = 2)
+    private List<String> key2;
 }

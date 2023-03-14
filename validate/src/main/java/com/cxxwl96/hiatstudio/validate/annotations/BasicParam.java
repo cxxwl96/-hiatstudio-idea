@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 
 /**
  * 基础参数注入注解。
- * 与BeanParams作为javaBean接收类似，只不过这里是一个参数一个参数的接收
+ * 与@BeanParam作为javaBean接收类似，只不过这里是一个参数一个参数的接收
  * 在参数个数较少的情况下建议使用基础参数注入，避免每个功能接口接收参数都新建一个JavaBean。
  *
  * @author cxxwl96

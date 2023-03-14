@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate.custom;
+package com.cxxwl96.hiatstudio.validate.res;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +27,7 @@ import javax.validation.ConstraintValidatorContext;
  * InValidator
  *
  * @author cxxwl96
- * @since 2023/3/11 18:00
+ * @since 2023/3/14 19:05
  */
 public class InValidator implements ConstraintValidator<In, Integer> {
     private final Set<Integer> values = new HashSet<>();

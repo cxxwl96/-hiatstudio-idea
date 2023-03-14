@@ -14,23 +14,31 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate;
+package com.cxxwl96.hiatstudio.validate.test;
 
+import com.cxxwl96.hiatstudio.validate.MethodRunner;
+import com.cxxwl96.hiatstudio.validate.annotations.ReturnData;
+
+import org.junit.Test;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自定义校验接口
+ * ReturnDataTest
  *
  * @author cxxwl96
- * @since 2023/3/8 14:27
+ * @since 2023/3/14 19:13
  */
-public interface CustomValidatorHandler {
-    /**
-     * 自定义校验处理
-     *
-     * @param paramValues 入参参数
-     * @param chain 校验链
-     * @throws IllegalArgumentException 参数校验异常
-     */
-    void handle(List<String> paramValues, ValidationChain chain) throws IllegalArgumentException;
+public class ReturnDataTest {
+    @Test
+    public void test() {
+        MethodRunner.run(this.getClass(), "runMethod", new ArrayList<>());
+    }
+
+    private void runMethod(
+        // 返回数据
+        @ReturnData List<String> returnData) {
+
+    }
 }

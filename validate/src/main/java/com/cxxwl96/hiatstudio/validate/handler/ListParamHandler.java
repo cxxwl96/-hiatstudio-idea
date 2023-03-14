@@ -22,13 +22,15 @@ import com.cxxwl96.hiatstudio.validate.annotations.ListParam;
 import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
 import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
+import java.lang.reflect.Parameter;
+
 /**
- * 处理器：@ListParams注解校验处理器
+ * 处理器：@ListParam注解校验处理器
  *
  * @author cxxwl96
  * @since 2023/3/3 17:46
  */
-public class ListParamsHandler implements ArgumentValidatorHandler<ListParam> {
+public class ListParamHandler implements ArgumentValidatorHandler<ListParam> {
     private ListParam listParam;
 
     /**
@@ -59,6 +61,10 @@ public class ListParamsHandler implements ArgumentValidatorHandler<ListParam> {
         chain.intercept();
         // 校验个数，配置了参数长度并且不满足个数相等则校验失败
         constraintSize(listParam.size(), metadata.getParamValues().size());
+        // 校验方法参数上的hibernate-validator的校验注解
+        String paramName = element.getName();
+        Object paramValue = metadata.getParamValues();
+        constraintHibernateValidateAnnotations(element.getParameterOrField(Parameter.class), paramName, paramValue);
         return metadata.getParamValues();
     }
 }

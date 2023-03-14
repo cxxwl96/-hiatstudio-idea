@@ -26,10 +26,10 @@ import java.lang.annotation.Target;
 
 /**
  * 参数校验。
- * 仅用于功能接口上，用于参数个数校验，此注解可配合@BasicParam、@BeanParams、@ListParams使用。
+ * 仅用于功能接口上，用于参数个数校验，此注解可配合@BasicParam、@BeanParam、@ListParam使用。
  * <p>
  * 注：此注解的参数个数校验优先级高于以上一切可能带有参数个数校验注解的优先级。
- * 例如@BeanParams自动校验属性个数、@ListParams自带参数个数。当设置了此注解校验参数个数时，将优先使用此注解校验参数个数
+ * 例如@BeanParam自动校验属性个数、@ListParam自带参数个数。当设置了此注解校验参数个数时，将优先使用此注解校验参数个数
  *
  * @author cxxwl96
  * @since 2023/2/27 15:08

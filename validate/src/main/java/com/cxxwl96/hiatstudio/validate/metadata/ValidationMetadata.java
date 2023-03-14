@@ -45,12 +45,12 @@ public class ValidationMetadata {
     // 功能接口的参数
     private final List<String> paramValues;
 
-    // 功能接口参数中可能存在通过@ListParams注入返回结果
+    // 功能接口参数中可能存在通过@ReturnData注入返回结果
     private final List<String> returnData;
 
     public ValidationMetadata(Method runMethod, List<String> paramValues, List<String> returnData) {
         Assert.notNull(runMethod, "runMethod cannot be null.");
-        Assert.notNull(paramValues, "parameters cannot be null.");
+        Assert.notNull(paramValues, "paramValues cannot be null.");
         Assert.notNull(returnData, "returnData cannot be null.");
         this.runMethod = runMethod;
         // 使用Spring工具获取参数名

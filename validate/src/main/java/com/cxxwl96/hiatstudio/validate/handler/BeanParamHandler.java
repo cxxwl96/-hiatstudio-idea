@@ -34,12 +34,12 @@ import cn.hutool.core.util.ModifierUtil;
 import cn.hutool.core.util.ReflectUtil;
 
 /**
- * 处理器：@BeanParams注解校验处理器
+ * 处理器：@BeanParam注解校验处理器
  *
  * @author cxxwl96
  * @since 2023/3/3 17:46
  */
-public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
+public class BeanParamHandler implements ArgumentValidatorHandler<BeanParam> {
     private BeanParam beanParam;
 
     /**
