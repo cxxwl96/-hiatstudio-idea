@@ -16,9 +16,9 @@
 
 package com.cxxwl96.hiatstudio.validate.test;
 
-import com.cxxwl96.hiatstudio.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.MethodRunner;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
+import com.cxxwl96.hiatstudio.validate.res.MyValidatorHandler;
 
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class ParamValidatorTest {
 
     // size: 长度校验
     // customValidatorHandler: 自定义校验处理器
-    @ParamValidator(size = 3, customValidatorHandler = CustomValidatorHandler.class)
+    @ParamValidator(size = 3, customValidatorHandler = MyValidatorHandler.class)
     private void runMethod() {
 
     }
