@@ -18,8 +18,9 @@ package com.cxxwl96.hiatstudio.validate.handler;
 
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
@@ -51,15 +52,17 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
      *
      * @param metadata 校验元数据
      * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
+     * @param element 方法参数或类字段的元数据
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
-        String paramName) throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, ElementMetadata element) throws Exception {
+        if (!element.onParameter()) {
+            throw new IllegalArgumentException("BasicParam supports only method parameters.");
+        }
+        final Parameter parameter = element.getParameterOrField(Parameter.class);
+        final String paramName = element.getName();
         // 拦截下一个校验处理器
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值

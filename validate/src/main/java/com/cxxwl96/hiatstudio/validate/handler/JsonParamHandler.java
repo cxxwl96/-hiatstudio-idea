@@ -22,12 +22,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
 
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
@@ -55,18 +57,16 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
      *
      * @param metadata 校验元数据
      * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
+     * @param element 方法参数或类字段的元数据
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
-        String paramName) throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, ElementMetadata element) throws Exception {
         // 拦截下一个校验处理器
         chain.intercept();
         final List<String> paramValues = metadata.getParamValues(); // 输入的参数值
+        final String paramName = element.getName();
         // 校验参数取值是否越界
         constraintIndexOutOfRange(paramName, jsonParam.index(), paramValues.size());
         // 获取输入的字符串参数
@@ -77,17 +77,21 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
         }
         // 转换JSON字符串为对象类型
         Object paramValue = parseJsonToObject(paramValueString);
-        // 若@JsonParam注解在方法参数上，则需要校验方法参数上的hibernate-validator的校验注解；若@JsonParam注解在JavaBean的字段上，会@BeanParam会自动校验
-        if (parameter != null) {
+        // 若@JsonParam注解在方法参数上，则需要校验方法参数上的hibernate-validator的校验注解；
+        if (element.onParameter()) {
             // 校验方法参数上的hibernate-validator的校验注解
-            constraintHibernateValidationAnnotations(parameter, paramName, paramValue);
-
+            constraintHibernateValidationAnnotations(element.getParameterOrField(Parameter.class), paramName,
+                paramValue);
         }
-        // TODO
-        // 若通过jsonPath接收，并且接收的类型是一个正常的类，此时这个类有可能加了hibernate的校验注解，则需要再次进行校验
-        if (StrUtil.isNotBlank(jsonParam.jsonPath())) {
-
+        // 若接收的类型是一个标准的类，此时这个类的字段有可能加了hibernate的校验注解，则需要再次进行校验
+        // 虽然可以在这个接收类型字段上添加@Valid注解进行校验，这里做了这个步骤就可以不用添加@Valid了，
+        if (ClassUtil.isNormalClass(element.getType())) {
+            // 需要将上面得到的paramValue类型转换为真实的类，不然上面的到的paramValue并不是用户真实创建的类（可能含有hibernate的校验注解）
+            final Object beanInstance = typeCast(paramName, paramValue, element.getType());
+            // 最终通过validate进行校验
+            constraintHibernateValidate(beanInstance);
         }
+
         return paramValue;
     }
 

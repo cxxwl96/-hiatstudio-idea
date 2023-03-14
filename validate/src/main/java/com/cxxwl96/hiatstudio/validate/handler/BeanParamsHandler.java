@@ -18,11 +18,11 @@ package com.cxxwl96.hiatstudio.validate.handler;
 
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
 import com.cxxwl96.hiatstudio.validate.annotations.IgnoreField;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
-import com.cxxwl96.hiatstudio.validate.utils.ValidationUtil;
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -32,7 +32,6 @@ import java.util.Locale;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ModifierUtil;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.extra.validation.BeanValidationResult;
 
 /**
  * 处理器：@BeanParams注解校验处理器
@@ -58,15 +57,17 @@ public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
      *
      * @param metadata 校验元数据
      * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
+     * @param element 方法参数或类字段的元数据
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
-        String paramName) throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, ElementMetadata element) throws Exception {
+        if (!element.onParameter()) {
+            throw new IllegalArgumentException("BeanParam supports only method parameters.");
+        }
+        final Parameter parameter = element.getParameterOrField(Parameter.class);
+        final String paramName = element.getName();
         // 拦截下一个校验处理器
         chain.intercept();
         // 校验个数，配置了参数长度并且不满足个数相等则校验失败
@@ -79,12 +80,7 @@ public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
         // 创建javabean对象并进行字段注入
         Object beanInstance = newBeanInstance(metadata, parameter);
         // 最终通过validate进行校验
-        final BeanValidationResult result = ValidationUtil.warpValidate(beanInstance);
-        if (!result.isSuccess()) {
-            for (BeanValidationResult.ErrorMessage message : result.getErrorMessages()) {
-                throw new IllegalArgumentException(message.getMessage());
-            }
-        }
+        constraintHibernateValidate(beanInstance);
         // 校验通过则返回bean的实例
         return beanInstance;
     }
@@ -100,7 +96,9 @@ public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
     private Object newBeanInstance(ValidationMetadata metadata, Parameter parameter) throws Exception {
         final Object beanInstance = parameter.getType().newInstance();
         int paramValueIndex = 0; // 参数索引
-        for (Field field : parameter.getType().getDeclaredFields()) {
+        final Field[] fields = parameter.getType().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            final Field field = fields[i];
             // 过滤静态的字段以及忽略的字段
             if (ModifierUtil.isStatic(field) || field.isAnnotationPresent(IgnoreField.class)) {
                 continue;
@@ -112,7 +110,8 @@ public class BeanParamsHandler implements ArgumentValidatorHandler<BeanParam> {
                 // 调用初始化方法
                 validator.initialize(field.getAnnotation(JsonParam.class));
                 // 调用处理器处理方法
-                paramValue = validator.handle(metadata, new ValidationChain(), null, -1, field.getName());
+                final ElementMetadata element = new ElementMetadata(field, i, field.getName());
+                paramValue = validator.handle(metadata, new ValidationChain(), element);
             } else {
                 // 校验参数取值是否越界
                 constraintIndexOutOfRange(field.getName(), paramValueIndex, metadata.getParamValues().size());

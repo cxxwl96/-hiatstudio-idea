@@ -16,6 +16,7 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
 import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import java.lang.annotation.Annotation;
@@ -127,7 +128,8 @@ public class Validation {
                 }
                 // 2、调用处理器处理方法，这里使用校验链的目的是因为一个参数可能被多个校验处理器处理，多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
                 final ValidationChain chain = new ValidationChain();
-                paramValue = validator.handle(metadata, chain, parameter, index, paramName);
+                final ElementMetadata element = new ElementMetadata(parameter, index, paramName); // 默认传入的是方法参数的元数据
+                paramValue = validator.handle(metadata, chain, element);
                 // 处理完成后判断校验链是否不执行下一个校验处理器，不执行则直接返回参数真实类型的参数值
                 if (!chain.doNext()) {
                     return paramValue;

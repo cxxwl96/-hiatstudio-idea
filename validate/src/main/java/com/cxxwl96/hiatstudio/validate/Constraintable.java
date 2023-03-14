@@ -99,6 +99,15 @@ public interface Constraintable {
         // 给validInstance字段赋值
         ReflectUtil.setFieldValue(beanInstance, paramName, paramValue);
         // 最终通过validate进行校验
+        constraintHibernateValidate(beanInstance);
+    }
+
+    /**
+     * 调用hibernate的validator进行校验
+     *
+     * @param beanInstance 需要校验的对象
+     */
+    default void constraintHibernateValidate(Object beanInstance) {
         final BeanValidationResult result = ValidationUtil.warpValidate(beanInstance);
         if (!result.isSuccess()) {
             for (BeanValidationResult.ErrorMessage message : result.getErrorMessages()) {

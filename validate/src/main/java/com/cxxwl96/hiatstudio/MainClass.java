@@ -19,7 +19,6 @@ package com.cxxwl96.hiatstudio;
 import com.cxxwl96.hiatstudio.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationBuilder;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
@@ -35,6 +34,7 @@ import com.cxxwl96.hiatstudio.validate.handler.JsonParamHandler;
 import com.cxxwl96.hiatstudio.validate.handler.ListParamsHandler;
 import com.cxxwl96.hiatstudio.validate.handler.ParamValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.handler.ReturnDataHandler;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -110,7 +110,7 @@ public class MainClass {
         @JsonParam(index = 4) List<String> addresses,
         // 接收JSON字符串对应的类型
         @JsonParam(index = 5) JsonObject jsonObj,
-        // 接收JSON字符串对应的类型，通过jsonpath接收
+        // 接收JSON字符串对应的类型，通过jsonpath接收、
         @JsonParam(index = 5, jsonPath = "$.key2") List<String> key2,
 
         // 接收JavaBean
@@ -165,7 +165,8 @@ public class MainClass {
     @Data
     public static class JsonObject {
         private String key1;
-        @Size(max = 1)
+
+        @Size(max = 2)
         private List<String> key2;
     }
 

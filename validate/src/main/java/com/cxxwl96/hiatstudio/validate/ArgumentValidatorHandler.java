@@ -17,18 +17,19 @@
 package com.cxxwl96.hiatstudio.validate;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
 import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 import java.util.Locale;
 
 /**
  * 参数校验接口
  *
+ * @param <A> 需要实现的校验注解
  * @author cxxwl96
  * @since 2023/3/3 14:09
  */
@@ -40,14 +41,11 @@ public interface ArgumentValidatorHandler<A extends Annotation> extends Initiali
      *
      * @param metadata 校验元数据
      * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
+     * @param element 方法参数或类字段的元数据
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
-    Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index, String paramName)
-        throws Exception;
+    Object handle(ValidationMetadata metadata, ValidationChain chain, ElementMetadata element) throws Exception;
 
     /**
      * 复杂的类型转换
@@ -57,7 +55,7 @@ public interface ArgumentValidatorHandler<A extends Annotation> extends Initiali
      * @param paramTypeClass 需要转换的参数类型
      * @return 转换之后的对象
      */
-    default Object typeCast(String paramName, String paramValue, Class<?> paramTypeClass) {
+    default Object typeCast(String paramName, Object paramValue, Class<?> paramTypeClass) {
         // 复杂的类型转换，基本数据类型及字符串的转换
         try {
             return TypeUtils.cast(paramValue, paramTypeClass, null);

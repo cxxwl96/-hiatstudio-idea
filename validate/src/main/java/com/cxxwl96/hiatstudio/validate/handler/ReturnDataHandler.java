@@ -18,10 +18,9 @@ package com.cxxwl96.hiatstudio.validate.handler;
 
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ReturnData;
-
-import java.lang.reflect.Parameter;
+import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 /**
  * 处理器：@ReturnData注解校验处理器
@@ -30,20 +29,21 @@ import java.lang.reflect.Parameter;
  * @since 2023/3/3 17:46
  */
 public class ReturnDataHandler implements ArgumentValidatorHandler<ReturnData> {
+
     /**
      * 参数校验处理
      *
      * @param metadata 校验元数据
      * @param chain 校验链
-     * @param parameter 参数
-     * @param index 参数索引
-     * @param paramName 参数名
+     * @param element 方法参数或类字段的元数据
      * @return 校验通过参数的值
      * @throws Exception 参数校验失败异常
      */
     @Override
-    public Object handle(ValidationMetadata metadata, ValidationChain chain, Parameter parameter, int index,
-        String paramName) throws Exception {
+    public Object handle(ValidationMetadata metadata, ValidationChain chain, ElementMetadata element) throws Exception {
+        if (!element.onParameter()) {
+            throw new IllegalArgumentException("ReturnData supports only method parameters.");
+        }
         // 拦截下一个校验处理器
         chain.intercept();
         return metadata.getReturnData();

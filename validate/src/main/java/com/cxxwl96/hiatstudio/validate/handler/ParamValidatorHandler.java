@@ -19,8 +19,8 @@ package com.cxxwl96.hiatstudio.validate.handler;
 import com.cxxwl96.hiatstudio.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.MethodValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import lombok.SneakyThrows;
 
