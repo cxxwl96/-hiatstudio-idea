@@ -19,6 +19,7 @@ package com.cxxwl96.hiatstudio.validate.handler;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
@@ -27,6 +28,7 @@ import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
 import java.lang.reflect.Parameter;
 import java.util.List;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 /**
@@ -72,6 +74,11 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
         // 判断是否是JSON字符串
         if (!JSONUtil.isTypeJSON(paramValueString)) {
             throw new IllegalArgumentException("\"" + paramValueString + "\" is not a JSON string");
+        }
+        // 是否通过jsonPath进行接收
+        final String jsonPath = jsonParam.jsonPath();
+        if (StrUtil.isNotBlank(jsonPath)) {
+            return JSONPath.read(paramValueString, jsonPath);
         }
         try {
             // 是否是JSON对象

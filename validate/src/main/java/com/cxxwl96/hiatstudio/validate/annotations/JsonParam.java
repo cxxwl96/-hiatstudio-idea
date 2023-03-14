@@ -34,4 +34,7 @@ import java.lang.annotation.Target;
 public @interface JsonParam {
     // 需要接收参数的位置。即接收第几个参数，索引从0开始
     int index();
+
+    // 通过jsonPath接收指定的JSON结构
+    String jsonPath() default "";
 }

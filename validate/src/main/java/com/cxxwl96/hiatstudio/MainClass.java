@@ -109,12 +109,14 @@ public class MainClass {
         @JsonParam(index = 4) List<String> addresses,
         // 接收JSON字符串对应的类型
         @JsonParam(index = 5) JsonObject jsonObj,
+        // 接收JSON字符串对应的类型，通过jsonpath接收
+        @JsonParam(index = 5, jsonPath = "$.key2") List<String> key2,
 
         // 接收JavaBean
         @BeanParam(size = 6) BeanParams beanParams,
 
         // 接收List<String>
-        @ListParam List<String> listParams,
+        @ListParam(size = 6) List<String> listParams,
 
         // 返回数据
         @ReturnData List<String> returnData) {
