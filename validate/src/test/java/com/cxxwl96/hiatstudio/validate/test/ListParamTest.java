@@ -42,7 +42,7 @@ public class ListParamTest {
 
     private void runMethod(
         // 接收List<String>
-        @ListParam(size = 4) @Size(max = 3) List<String> listParam) {
+        @ListParam(size = 4) @Size(max = 4) List<String> listParam) {
 
     }
 }

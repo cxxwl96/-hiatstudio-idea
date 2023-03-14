@@ -79,6 +79,8 @@ public class BeanParamHandler implements ArgumentValidatorHandler<BeanParam> {
         }
         // 创建javabean对象并进行字段注入
         Object beanInstance = newBeanInstance(metadata, parameter);
+        // 校验方法参数上的hibernate-validator的校验注解
+        constraintHibernateValidateAnnotations(parameter, paramName, beanInstance);
         // 最终通过validate进行校验
         constraintHibernateValidate(beanInstance);
         // 校验通过则返回bean的实例
