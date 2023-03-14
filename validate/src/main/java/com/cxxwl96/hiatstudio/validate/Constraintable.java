@@ -78,7 +78,7 @@ public interface Constraintable {
      *
      * @param parameter 方法参数
      */
-    default void constraintHibernateValidationAnnotations(Parameter parameter, String paramName, Object paramValue)
+    default void constraintHibernateValidateAnnotations(Parameter parameter, String paramName, Object paramValue)
         throws InstantiationException, IllegalAccessException {
         // 使用字节码增强动态生成bean对象，将方法参数上的hibernate-validator的校验注解和对应的方法参数动态生成javabean
         // 最后通过validate校验

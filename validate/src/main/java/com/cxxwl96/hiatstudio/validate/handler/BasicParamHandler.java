@@ -77,7 +77,7 @@ public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
             return paramValue;
         }
         // 校验方法参数上的hibernate-validator的校验注解
-        constraintHibernateValidationAnnotations(parameter, paramName, paramValue);
+        constraintHibernateValidateAnnotations(parameter, paramName, paramValue);
         // 校验通过则返回参数值
         return paramValue;
     }
