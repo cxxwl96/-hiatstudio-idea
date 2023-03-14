@@ -17,11 +17,9 @@
 package com.cxxwl96.hiatstudio.validate;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.cxxwl96.hiatstudio.validate.exceptions.TypeCastException;
 import com.cxxwl96.hiatstudio.validate.metadata.ElementMetadata;
 import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.Locale;
@@ -34,8 +32,6 @@ import java.util.Locale;
  * @since 2023/3/3 14:09
  */
 public interface ArgumentValidatorHandler<A extends Annotation> extends Initializable<A>, Constraintable {
-    Logger log = LoggerFactory.getLogger(ArgumentValidatorHandler.class);
-
     /**
      * 参数校验处理
      *
@@ -54,17 +50,17 @@ public interface ArgumentValidatorHandler<A extends Annotation> extends Initiali
      * @param paramValue 参数值。需要转换的数据，可以是基本数据类型的字符串形式，也可以是json字符串
      * @param paramTypeClass 需要转换的参数类型
      * @return 转换之后的对象
+     * @throws TypeCastException 类型转换失败异常
      */
-    default Object typeCast(String paramName, Object paramValue, Class<?> paramTypeClass) {
+    default Object typeCast(String paramName, Object paramValue, Class<?> paramTypeClass) throws TypeCastException {
         // 复杂的类型转换，基本数据类型及字符串的转换
         try {
             return TypeUtils.cast(paramValue, paramTypeClass, null);
         } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
             final String error = String.format(Locale.ROOT,
                 "The type of parameter \"%s\" does not match the type of the input parameter. An \"%s\" is expected, but \"%s\" is entered.",
                 paramName, paramTypeClass.getName(), paramValue);
-            throw new ClassCastException(error);
+            throw new TypeCastException(error, exception);
         }
     }
 }

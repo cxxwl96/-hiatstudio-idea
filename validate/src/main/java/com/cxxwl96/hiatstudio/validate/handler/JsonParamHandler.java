@@ -80,8 +80,7 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
         // 若@JsonParam注解在方法参数上，则需要校验方法参数上的hibernate-validator的校验注解；
         if (element.onParameter()) {
             // 校验方法参数上的hibernate-validator的校验注解
-            constraintHibernateValidateAnnotations(element.getParameterOrField(Parameter.class), paramName,
-                paramValue);
+            constraintHibernateValidateAnnotations(element.getParameterOrField(Parameter.class), paramName, paramValue);
         }
         // 若接收的类型是一个标准的类，此时这个类的字段有可能加了hibernate的校验注解，则需要再次进行校验
         // 虽然可以在这个接收类型字段上添加@Valid注解进行校验，这里做了这个步骤就可以不用添加@Valid了，

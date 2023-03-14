@@ -19,7 +19,8 @@ package com.cxxwl96.hiatstudio.utils;
 import java.lang.reflect.Field;
 import java.util.Locale;
 
-import lombok.SneakyThrows;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * IDEA应用工具
@@ -27,20 +28,32 @@ import lombok.SneakyThrows;
  * @author cxxwl96
  * @since 2023/3/11 22:42
  */
+@Slf4j
 public class ApplicationUtil {
     /**
      * 获取语言环境，不设置默认为ENGLISH
      *
      * @return 语言环境
      */
-    @SneakyThrows
     public static Locale getLocale() {
         final String locale = System.getProperty("Locale");
+        // 没有传入此参数默认ENGLISH
+        if (StrUtil.isBlank(locale)) {
+            return Locale.ENGLISH;
+        }
         for (Field field : Locale.class.getDeclaredFields()) {
             if (field.getType().equals(Locale.class) && field.getName().equalsIgnoreCase(locale)) {
-                return (Locale) field.get(null);
+                try {
+                    return (Locale) field.get(null);
+                } catch (IllegalAccessException exception) {
+                    log.warn("Illegal access {} language. detail message: {}", locale, exception.getMessage(),
+                        exception);
+                    return Locale.ENGLISH;
+                }
             }
         }
+        log.warn("{} language not found.", locale);
+        // 传入的语言参数不存在默认ENGLISH
         return Locale.ENGLISH;
     }
 }

@@ -25,15 +25,12 @@ import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import java.lang.reflect.Parameter;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 处理器：@BasicParam注解校验处理器
  *
  * @author cxxwl96
  * @since 2023/3/3 15:49
  */
-@Slf4j
 public class BasicParamHandler implements ArgumentValidatorHandler<BasicParam> {
     private BasicParam basicParam;
 

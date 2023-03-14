@@ -27,8 +27,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ValidationException;
-
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -69,74 +67,63 @@ public class Validation {
      * 参数校验逻辑
      *
      * @return 校验结果
-     * @throws ValidationException 校验实体可能产生的异常，通过包装成校验失败异常
      */
-    public ValidationResult validate() throws ValidationException {
-        // 无校验实体时默认校验结果成功，且无参数列表的值
+    public ValidationResult validate() {
+        // 无校验处理器时默认校验结果成功，且返回结果中无参数列表的值
         if (methodValidators.size() == 0 && argumentValidators.size() == 0) {
             return ValidationResult.success();
         }
-        // 校验方法实体
-        methodValidate();
-        // 校验参数实体
         List<Object> paramValues = new ArrayList<>(); // 功能接口参数列表值
-        for (int index = 0; index < metadata.getRunMethod().getParameters().length; index++) {
-            try {
+        try {
+            // 校验方法实体
+            methodValidate();
+            // 校验参数实体
+            for (int index = 0; index < metadata.getRunMethod().getParameters().length; index++) {
                 // 执行校验实体校验参数
                 paramValues.add(argumentValidate(index));
-            } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
-                return ValidationResult.failed().setErrorMessage(exception.getMessage());
             }
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+            return ValidationResult.failed().setErrorMessage(exception.getMessage());
         }
         // 返回校验结果
         return ValidationResult.success().setParamValues(paramValues.toArray());
     }
 
-    private void methodValidate() {
+    private void methodValidate() throws Exception {
         for (MethodValidatorHandler<? extends Annotation> validator : methodValidators) {
-            try {
-                // 1、调用初始化方法
-                if (!invokeInitializable(validator, metadata.getRunMethod())) {
-                    // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
-                    continue;
-                }
-                // 2、调用处理器处理方法，这里使用校验链的目的是因为一个方法可能被多个校验处理器处理，多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
-                final ValidationChain chain = new ValidationChain();
-                validator.handle(metadata, chain);
-                // 处理完成后判断校验链是否不执行下一个校验处理器，不执行则退出校验，后面的校验处理器则不会执行
-                if (!chain.doNext()) {
-                    break;
-                }
-            } catch (Exception exception) {
-                // 校验抛出异常时终止校验
-                throw new ValidationException(exception.getMessage(), exception);
+            // 1、调用初始化方法
+            if (!invokeInitializable(validator, metadata.getRunMethod())) {
+                // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
+                continue;
+            }
+            // 2、调用处理器处理方法，这里使用校验链的目的是因为一个方法可能被多个校验处理器处理，多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
+            final ValidationChain chain = new ValidationChain();
+            validator.handle(metadata, chain);
+            // 处理完成后判断校验链是否不执行下一个校验处理器，不执行则退出校验，后面的校验处理器则不会执行
+            if (!chain.doNext()) {
+                break;
             }
         }
     }
 
-    private Object argumentValidate(int index) {
+    private Object argumentValidate(int index) throws Exception {
         final Parameter parameter = metadata.getRunMethod().getParameters()[index];
         final String paramName = metadata.getParamNames().get(index);
         Object paramValue = null; // 参数真实类型的值
         for (ArgumentValidatorHandler<? extends Annotation> validator : argumentValidators) {
-            try {
-                // 1、调用初始化方法
-                if (!invokeInitializable(validator, parameter)) {
-                    // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
-                    continue;
-                }
-                // 2、调用处理器处理方法，这里使用校验链的目的是因为一个参数可能被多个校验处理器处理，多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
-                final ValidationChain chain = new ValidationChain();
-                final ElementMetadata element = new ElementMetadata(parameter, index, paramName); // 默认传入的是方法参数的元数据
-                paramValue = validator.handle(metadata, chain, element);
-                // 处理完成后判断校验链是否不执行下一个校验处理器，不执行则直接返回参数真实类型的参数值
-                if (!chain.doNext()) {
-                    return paramValue;
-                }
-            } catch (Exception exception) {
-                // 校验抛出异常时终止校验
-                throw new ValidationException(exception.getMessage(), exception);
+            // 1、调用初始化方法
+            if (!invokeInitializable(validator, parameter)) {
+                // 方法或方法参数上不包含此校验处理器的校验注解，则跳过此校验处理器
+                continue;
+            }
+            // 2、调用处理器处理方法，这里使用校验链的目的是因为一个参数可能被多个校验处理器处理，多个校验处理器处理的时候返回的是最后一个处理器处理的结果，除非处理器自身调用校验链的拦截方法
+            final ValidationChain chain = new ValidationChain();
+            final ElementMetadata element = new ElementMetadata(parameter, index, paramName); // 默认传入的是方法参数的元数据
+            paramValue = validator.handle(metadata, chain, element);
+            // 处理完成后判断校验链是否不执行下一个校验处理器，不执行则直接返回参数真实类型的参数值
+            if (!chain.doNext()) {
+                return paramValue;
             }
         }
         // 若上面没有任何一个校验处理器拦截的话，这里返回最后一个校验处理器处理的结果

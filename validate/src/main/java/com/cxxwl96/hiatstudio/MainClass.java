@@ -51,7 +51,6 @@ import javax.validation.constraints.Size;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * MainClass
@@ -59,7 +58,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author cxxwl96
  * @since 2023/2/27 20:22
  */
-@Slf4j
 public class MainClass {
     public static void main(String[] args) {
         // 需要的参数

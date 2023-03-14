@@ -52,7 +52,11 @@ public class ValidationUtil {
             // 快速失败模式，即有一个失败则不校验后面的属性
             .failFast(true)
             // 设置语言，默认为ENGLISH
-            .defaultLocale(ApplicationUtil.getLocale()).buildValidatorFactory().getValidator();
+            .defaultLocale(ApplicationUtil.getLocale())
+            // 构建validatorFactory
+            .buildValidatorFactory()
+            // 获取validator
+            .getValidator();
     }
 
     /**

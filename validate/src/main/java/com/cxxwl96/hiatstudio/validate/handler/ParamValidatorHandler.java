@@ -22,8 +22,6 @@ import com.cxxwl96.hiatstudio.validate.ValidationChain;
 import com.cxxwl96.hiatstudio.validate.annotations.ParamValidator;
 import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
-import lombok.SneakyThrows;
-
 /**
  * 处理器：@ParamValidator注解校验处理器
  *
@@ -48,10 +46,10 @@ public class ParamValidatorHandler implements MethodValidatorHandler<ParamValida
      *
      * @param metadata 校验元数据
      * @param chain 校验链
+     * @throws Exception 参数校验失败异常
      */
     @Override
-    @SneakyThrows
-    public void handle(ValidationMetadata metadata, ValidationChain chain) {
+    public void handle(ValidationMetadata metadata, ValidationChain chain) throws Exception {
         // 是否设置了自定义校验，设置了则优先自定义校验
         final Class<? extends CustomValidatorHandler>[] classes = paramValidator.customValidatorHandler();
         for (Class<? extends CustomValidatorHandler> clazz : classes) {
