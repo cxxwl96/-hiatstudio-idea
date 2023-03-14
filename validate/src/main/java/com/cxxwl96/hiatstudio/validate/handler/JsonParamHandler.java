@@ -22,7 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.JsonParam;
 
 import java.lang.reflect.Parameter;
@@ -75,25 +75,41 @@ public class JsonParamHandler implements ArgumentValidatorHandler<JsonParam> {
         if (!JSONUtil.isTypeJSON(paramValueString)) {
             throw new IllegalArgumentException("\"" + paramValueString + "\" is not a JSON string");
         }
+        // 转换JSON字符串为对象类型
+        Object paramValue = parseJsonToObject(paramValueString);
+        // 若@JsonParam注解在方法参数上，则需要校验方法参数上的hibernate-validator的校验注解；若@JsonParam注解在JavaBean的字段上，会@BeanParam会自动校验
+        if (parameter != null) {
+            // 校验方法参数上的hibernate-validator的校验注解
+            constraintHibernateValidationAnnotations(parameter, paramName, paramValue);
+
+        }
+        // TODO
+        // 若通过jsonPath接收，并且接收的类型是一个正常的类，此时这个类有可能加了hibernate的校验注解，则需要再次进行校验
+        if (StrUtil.isNotBlank(jsonParam.jsonPath())) {
+
+        }
+        return paramValue;
+    }
+
+    private Object parseJsonToObject(String jsonText) {
         // 是否通过jsonPath进行接收
         final String jsonPath = jsonParam.jsonPath();
         if (StrUtil.isNotBlank(jsonPath)) {
-            return JSONPath.read(paramValueString, jsonPath);
+            // 解析jsonPath
+            return JSONPath.read(jsonText, jsonPath);
         }
         try {
             // 是否是JSON对象
-            if (JSONUtil.isTypeJSONObject(paramValueString)) {
-                return JSONObject.parse(paramValueString);
+            if (JSONUtil.isTypeJSONObject(jsonText)) {
+                return JSONObject.parse(jsonText);
             }
             // 是否是JSON数组
-            if (JSONUtil.isTypeJSONArray(paramValueString)) {
-                return JSONArray.parse(paramValueString);
+            if (JSONUtil.isTypeJSONArray(jsonText)) {
+                return JSONArray.parse(jsonText);
             }
         } catch (JSONException exception) {
-            throw new JSONException(
-                "\"" + paramValueString + "\" cannot be converted to JSON. " + exception.getMessage());
+            throw new JSONException("\"" + jsonText + "\" cannot be converted to JSON. " + exception.getMessage());
         }
-        throw new JSONException("\"" + paramValueString + "\" cannot be converted to JSON");
-
+        throw new JSONException("\"" + jsonText + "\" cannot be converted to JSON");
     }
 }

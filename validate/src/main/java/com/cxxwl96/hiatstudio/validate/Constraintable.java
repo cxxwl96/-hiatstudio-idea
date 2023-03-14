@@ -16,7 +16,23 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import com.cxxwl96.hiatstudio.validate.utils.ValidationUtil;
+
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.modifier.Visibility;
+import net.bytebuddy.dynamic.DynamicType;
+
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.extra.validation.BeanValidationResult;
 
 /**
  * 参数约束接口
@@ -54,6 +70,40 @@ public interface Constraintable {
                 "Out of range. There are only %d input parameters, but \"%s\" takes a %d parameter.", index, paramName,
                 index + 1);
             throw new IndexOutOfBoundsException(error);
+        }
+    }
+
+    /**
+     * 校验方法参数上的hibernate-validator的校验注解
+     *
+     * @param parameter 方法参数
+     */
+    default void constraintHibernateValidationAnnotations(Parameter parameter, String paramName, Object paramValue)
+        throws InstantiationException, IllegalAccessException {
+        // 使用字节码增强动态生成bean对象，将方法参数上的hibernate-validator的校验注解和对应的方法参数动态生成javabean
+        // 最后通过validate校验
+        DynamicType.Builder<Object> dynamicBean = new ByteBuddy().subclass(Object.class).name("HibernateValidateBean");
+        // 过滤得到可以放置在类属性上的注解
+        List<Annotation> validAnnoList = Arrays.stream(parameter.getAnnotations()).filter(annotation -> {
+            // 获取参数上注解类的Target注解
+            return Arrays.stream(annotation.annotationType().getAnnotation(Target.class).value())
+                .anyMatch(elementType -> elementType == ElementType.FIELD);
+        }).collect(Collectors.toList());
+        // 将被@BasicParam修饰的参数存入动态bean中
+        final Object beanInstance = dynamicBean.defineField(paramName, parameter.getType(), Visibility.PUBLIC)
+            .annotateField(validAnnoList)
+            .make()
+            .load(ClassLoader.getSystemClassLoader())
+            .getLoaded()
+            .newInstance();
+        // 给validInstance字段赋值
+        ReflectUtil.setFieldValue(beanInstance, paramName, paramValue);
+        // 最终通过validate进行校验
+        final BeanValidationResult result = ValidationUtil.warpValidate(beanInstance);
+        if (!result.isSuccess()) {
+            for (BeanValidationResult.ErrorMessage message : result.getErrorMessages()) {
+                throw new IllegalArgumentException(message.getMessage());
+            }
         }
     }
 }

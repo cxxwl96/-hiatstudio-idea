@@ -18,7 +18,7 @@ package com.cxxwl96.hiatstudio.validate.handler;
 
 import com.cxxwl96.hiatstudio.validate.ArgumentValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.annotations.ReturnData;
 
 import java.lang.reflect.Parameter;

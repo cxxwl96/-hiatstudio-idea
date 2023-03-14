@@ -16,6 +16,8 @@
 
 package com.cxxwl96.hiatstudio.validate;
 
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;

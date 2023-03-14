@@ -17,6 +17,7 @@
 package com.cxxwl96.hiatstudio.validate;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,7 @@ package com.cxxwl96.hiatstudio;
 import com.cxxwl96.hiatstudio.validate.CustomValidatorHandler;
 import com.cxxwl96.hiatstudio.validate.ValidationBuilder;
 import com.cxxwl96.hiatstudio.validate.ValidationChain;
-import com.cxxwl96.hiatstudio.validate.ValidationMetadata;
+import com.cxxwl96.hiatstudio.validate.metadata.ValidationMetadata;
 import com.cxxwl96.hiatstudio.validate.ValidationResult;
 import com.cxxwl96.hiatstudio.validate.annotations.BasicParam;
 import com.cxxwl96.hiatstudio.validate.annotations.BeanParam;
@@ -46,6 +46,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -150,6 +151,10 @@ public class MainClass {
         @JsonParam(index = 5)
         private JsonObject jsonObj;
 
+        // 接收JSON字符串对应的类型，通过jsonpath接收
+        @JsonParam(index = 5, jsonPath = "$.key2")
+        private List<String> key2;
+
         // setter方式注入
         private void setName(String name) {
             this.name = name;
@@ -160,7 +165,7 @@ public class MainClass {
     @Data
     public static class JsonObject {
         private String key1;
-
+        @Size(max = 1)
         private List<String> key2;
     }
 

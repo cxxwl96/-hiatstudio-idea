@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cxxwl96.hiatstudio.validate;
+package com.cxxwl96.hiatstudio.validate.metadata;
 
 import org.springframework.core.DefaultParameterNameDiscoverer;
 
