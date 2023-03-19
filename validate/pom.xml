@@ -71,6 +71,12 @@
             <artifactId>byte-buddy</artifactId>
             <version>1.10.19</version>
         </dependency>
+        <!--hiatstudio-ast-->
+        <dependency>
+            <groupId>com.cxxwl96.hiatstudio</groupId>
+            <artifactId>ast</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!--Test-->
         <dependency>
             <groupId>junit</groupId>

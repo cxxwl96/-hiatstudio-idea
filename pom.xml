@@ -11,6 +11,7 @@
 
     <modules>
         <module>validate</module>
+        <module>ast</module>
     </modules>
 
     <properties>
