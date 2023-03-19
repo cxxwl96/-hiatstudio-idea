@@ -23,6 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.List;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * 参数校验实现逻辑
@@ -148,11 +148,12 @@ public class Validation {
         // 校验处理器实现的接口中就一个接口是ArgumentValidatorHandler
         Class<? extends Annotation> validAnnotationClass = null; // 校验注解
         for (Type genericInterface : genericInterfaces) {
-            if (genericInterface instanceof ParameterizedTypeImpl) {
+            if (genericInterface instanceof ParameterizedType) {
                 // 获取校验处理器实现的接口
-                final Type[] arguments = ((ParameterizedTypeImpl) genericInterface).getActualTypeArguments();
+                final Type[] arguments = ((ParameterizedType) genericInterface).getActualTypeArguments();
                 // 因为校验处理器接口泛型列表就只有一个，所以直接返回
-                if (arguments.length == 1) {
+                if (arguments.length == 1 && ((Class<?>) arguments[0]).isAnnotation()) {
+                    //noinspection unchecked
                     validAnnotationClass = (Class<? extends Annotation>) arguments[0];
                     break;
                 }
