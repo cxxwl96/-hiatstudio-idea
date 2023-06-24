@@ -71,6 +71,12 @@
             <artifactId>byte-buddy</artifactId>
             <version>1.10.19</version>
         </dependency>
+        <!--Cglib-->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version>
+        </dependency>
         <!--hiatstudio-ast-->
         <dependency>
             <groupId>com.cxxwl96.hiatstudio</groupId>
